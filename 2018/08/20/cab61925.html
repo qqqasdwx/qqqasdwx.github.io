@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ipsec,vpn,有坑要填," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介 这两天抽空整理书签，发现CSDN上有一篇ipsec.conf的配置说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。 声明 本文转载自CSDN上的一篇好文IPSEC.CONF(5) － IPsec配置，英文原文IPSEC.CONF，由本文作者梳理。 想看原文的请自行跳转 补充声明 写到一半突然发现英文版原文和CSDN上的文章选项貌似不一致。。。懵了，因为是很久以前加的书签，也">
+<meta name="keywords" content="ipsec,vpn,有坑要填">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPSEC配置详解">
+<meta property="og:url" content="https://qqqasdwx.github.io/2018/08/20/cab61925.html">
+<meta property="og:site_name" content="ANON&#39;s blog">
+<meta property="og:description" content="简介 这两天抽空整理书签，发现CSDN上有一篇ipsec.conf的配置说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。 声明 本文转载自CSDN上的一篇好文IPSEC.CONF(5) － IPsec配置，英文原文IPSEC.CONF，由本文作者梳理。 想看原文的请自行跳转 补充声明 写到一半突然发现英文版原文和CSDN上的文章选项貌似不一致。。。懵了，因为是很久以前加的书签，也">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-21T07:29:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IPSEC配置详解">
+<meta name="twitter:description" content="简介 这两天抽空整理书签，发现CSDN上有一篇ipsec.conf的配置说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。 声明 本文转载自CSDN上的一篇好文IPSEC.CONF(5) － IPsec配置，英文原文IPSEC.CONF，由本文作者梳理。 想看原文的请自行跳转 补充声明 写到一半突然发现英文版原文和CSDN上的文章选项貌似不一致。。。懵了，因为是很久以前加的书签，也">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":1},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://qqqasdwx.github.io/2018/08/20/cab61925.html"/>
+
+
+
+
+
+  <title>IPSEC配置详解 | ANON's blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-123159998-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a859beeb8d00febf6787289e8763ad6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ANON's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://qqqasdwx.github.io/2018/08/20/cab61925.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ANON">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANON's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IPSEC配置详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-20T18:39:40+08:00">
+                2018-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/20/cab61925.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/20/cab61925.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p> 这两天抽空整理书签，发现CSDN上有一篇<code>ipsec.conf</code>的配置说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。</p>
+<h2 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h2><p> 本文转载自CSDN上的一篇好文<a href="https://blog.csdn.net/lanmolei814/article/details/38078361" target="_blank" rel="noopener">IPSEC.CONF(5) － IPsec配置</a>，英文原文<a href="http://www.freeswan.org/freeswan_trees/freeswan-1.91/doc/manpage.d/ipsec.conf.5.html" target="_blank" rel="noopener">IPSEC.CONF</a>，由本文作者梳理。<br> 想看原文的请自行跳转</p>
+<h2 id="补充声明"><a href="#补充声明" class="headerlink" title="补充声明"></a>补充声明</h2><p> 写到一半突然发现英文版原文和CSDN上的文章选项貌似不一致。。。懵了，因为是很久以前加的书签，也忘了当时用的那个版本了，所以以下内容看看就行了，不保证以下所有选项都可用（大部分应该还是可用的），等我有时间了啃一下英文版的，重新搭一个，再来补完这篇吧。<del>估计没什么希望了，逃~。</del><br> 放一个当前稳定版本（好像是2.06？）的英文文档链接<a href="http://www.freeswan.org/freeswan_trees/freeswan-2.06/doc/manpage.d/ipsec.conf.5.html" target="_blank" rel="noopener">IPSEC.CONF</a><br><a id="more"></a></p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><ol>
+<li><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>ipsec.conf指定了Openswan IPsec子系统的大多数配置和控制信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include ipsec.*.conf</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>包含指定的配置文件</p>
+</blockquote>
+</li>
+<li><h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>conn项定义了一个IPsec连接的规范，名字可以随意定义。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">conn snt</span><br><span class="line">      left=10.11.11.1</span><br><span class="line">      leftsubnet=10.0.1.0/24</span><br><span class="line">      leftnexthop=172.16.55.66</span><br><span class="line">      leftsourceip=10.0.1.1</span><br><span class="line">      right=192.168.22.1</span><br><span class="line">      rightsubnet=10.0.2.0/24</span><br><span class="line">      rightnexthop=172.16.88.99</span><br><span class="line">      rightsourceip=10.0.2.1</span><br><span class="line">      keyingtries=%forever</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="连接选项（GENERAL）"><a href="#连接选项（GENERAL）" class="headerlink" title="连接选项（GENERAL）"></a>连接选项（GENERAL）</h3></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">选项</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">connaddrfamily</td>
+<td style="text-align:center">连接地址族</td>
+<td style="text-align:center">可用参数为ipv4（缺省）或者ipv6<br>IPv6在openswan 2.4中的NETKEY支持和openswan 2.6.33中的KLIPS支持</td>
+</tr>
+<tr>
+<td style="text-align:center">type</td>
+<td style="text-align:center">连接类型</td>
+<td style="text-align:center"><strong>tunnel</strong>：隧道模式，用户的整个IP数据包被用来计算AH或ESP头，AH或ESP头以及ESP加密的用户数据被封装在一个新的IP数据包中。通常，隧道模式应用在两个安全网关之间的通讯。<br><strong>transport</strong>：传输模式，只是传输层数据被用来计算AH或ESP头，AH或ESP头以及ESP加密的用户数据被放置在原IP包头后面。通常，传输模式应用在两台主机之间的通讯，或一台主机和一个安全网关之间的通讯。 <br><strong>passthrough</strong>：表示不使用IPsec<br><strong>drop</strong>:表示丢弃数据<br><strong>reject</strong>:表示丢弃数据并返回ICMP诊断包</td>
+</tr>
+<tr>
+<td style="text-align:center">left</td>
+<td style="text-align:center">[必选项] 左侧设备公网接口IP地址</td>
+<td style="text-align:center"><strong>ip地址</strong><br><strong>%defaultroute</strong>：如果 <code>config setup</code> 项中的 <code>interfaces 包含</code> <code>%defaultroute</code>，那么<code>left</code>将自动由<code>本地的缺省路由接口地址</code>填充；<code>leftnexthop</code>也支持。<br><strong>%any</strong>：表示在协商时填充。<br><strong>%opportunistic</strong>：表示 <code>left</code> 和 <code>lefnexthop</code> 的参数从 <code>left</code> 侧客户端的DNS数据中获取。</td>
+</tr>
+<tr>
+<td style="text-align:center">leftsubnet</td>
+<td style="text-align:center">左侧设备的私有子网</td>
+<td style="text-align:center">格式为 <strong>network/netmask</strong><br>支持 <strong>vhost</strong>: 和 <strong>vnet</strong>: 这2个速记，语法与 <code>virtual_private</code> 相同<br> <strong>%priv</strong> 表示子网与 <code>virtual_private</code>相同<br> <strong>%no</strong> 表示没有子网</td>
+</tr>
+<tr>
+<td style="text-align:center">leftsubnets</td>
+<td style="text-align:center">指定左侧设备的多个私有子网</td>
+<td style="text-align:center">格式 <br><strong>{networkA/netmaskA,networkB/netmaskB,[..]}</strong><br><code>leftsubnet</code> 和 <code>leftsubnets</code> 不能同时使用。</td>
+</tr>
+<tr>
+<td style="text-align:center">leftprotoport</td>
+<td style="text-align:center">指定隧道中允许的通过的协议和端口</td>
+<td style="text-align:center">参数可以是数字或者协议名（请在 <code>/etc/protocols</code> 中查找），例如 <code>leftprotoport=icmp</code>，或 <code>protocol/port</code>，如 <code>tcp/smtp</code>。<br>ports可以使用数字或名字表示（请在 <code>/etc/services</code> 中查找）<br><strong>%any</strong> 表示所有的协议端口。</td>
+</tr>
+<tr>
+<td style="text-align:center">leftnexthop</td>
+<td style="text-align:center">左侧设备连接公网的下一跳网关IP地址</td>
+<td style="text-align:center">缺省为 <strong>%direct</strong>。如果这方法没有使用，则<code>leftnexthop</code>为 <strong>%defaultroute</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">leftsourceip</td>
+<td style="text-align:center">连接中主机的IP地址</td>
+<td style="text-align:center"><strong>ip</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">leftupdown</td>
+<td style="text-align:center">连接状态改变时的脚本</td>
+<td style="text-align:center">连接状态改变时， “updown”中的脚本调整路由和防火墙（缺省为 <strong>ipsec_updown</strong>）</td>
+</tr>
+<tr>
+<td style="text-align:center">leftfirewall</td>
+<td style="text-align:center">不再使用此选项</td>
+<td style="text-align:center">不再使用此选项</td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
+<li><h3 id="连接选项（AUTOMATIC-KEYING）"><a href="#连接选项（AUTOMATIC-KEYING）" class="headerlink" title="连接选项（AUTOMATIC KEYING）"></a>连接选项（AUTOMATIC KEYING）</h3>下面所有项选自动生成key中起作用，在手动指定key中被忽略。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">选项</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">auto</td>
+<td style="text-align:center">IPsec启动时自动执行</td>
+<td style="text-align:center">现在支持的参数有 <br><strong>add</strong> （<code>ipsec auto --add</code>）<br><strong>route</strong>（<code>ipsec auto --route</code>）<br><strong>start</strong>（<code>ipsec auto --up</code>）<br><strong>manual</strong>（<code>ipsec manual --up</code>）<br><strong>ignore</strong> 表示不自动启动<br>具体请看 <code>config setup</code></td>
+</tr>
+<tr>
+<td style="text-align:center">authby</td>
+<td style="text-align:center">2个安全网关之间的认证方法</td>
+<td style="text-align:center"><strong>secret</strong>:表示共享密钥<br><strong>rsasig</strong>:表示RSA数据签名（缺省）<br><strong>secret&#124;rsasig</strong>:同时使用</td>
+</tr>
+<tr>
+<td style="text-align:center">ike</td>
+<td style="text-align:center">IKE第一阶段（ISAKMP SA）中的加密/认证算法</td>
+<td style="text-align:center">格式为 <code>cipher-hash;modpgroup,cipher-hash;modpgroup,...</code>。 例如：<br><code>ike=3des-sha1,aes-sha1</code><br><code>ike=aes</code><br><code>ike=aes128-md5;modp2048</code><br> <code>ike=aes128-sha1;dh22</code><br><code>ike=modp1536</code><br> 算法值请查看 ipsec_spi(8)中的 –ike选项<br>IKE组合形式：<br> <strong>cipher: 3des or aes</strong><br> <strong>hash: sha1 or md5</strong><br> <strong>pfsgroupt(DHgroup): modp1024 or modp1536</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">phase2</td>
+<td style="text-align:center">设置将产生的SA类型</td>
+<td style="text-align:center"><strong>esp</strong>用于加密（缺省），<strong>ah</strong>用于认证</td>
+</tr>
+<tr>
+<td style="text-align:center">phase2alg</td>
+<td style="text-align:center">第二阶段中支持的算法</td>
+<td style="text-align:center">算法之间用逗号分隔</td>
+</tr>
+<tr>
+<td style="text-align:center">esp</td>
+<td style="text-align:center">此选项不再使用</td>
+<td style="text-align:center">用phase2alg代替</td>
+</tr>
+<tr>
+<td style="text-align:center">ah</td>
+<td style="text-align:center">连接中的AH算法</td>
+<td style="text-align:center">算法格式请看 ipsec_spi(8)中的 –ah选项</td>
+</tr>
+<tr>
+<td style="text-align:center">ikev2</td>
+<td style="text-align:center">IKEv2（RFC4309）设置使用</td>
+<td style="text-align:center"><strong>never</strong> 或 <strong>no</strong> 表示不使用<code>IKEv2</code><br><strong>propos</strong> 或 <strong>yes</strong> 表示允许使用<code>IKEv2</code>，同时缺省使用<code>IKEv2</code>进行协商<br><strong>insist</strong>:表示只接受<code>IKEv2</code>协商，<code>IKEv1</code>将被拒绝<br><strong>permit</strong>:缺省，表示不主动使用<code>IKEv2</code>，但对端使用<code>IKEv2</code>的话也接受</td>
+</tr>
+<tr>
+<td style="text-align:center">sareftrack</td>
+<td style="text-align:center">XXXXXX</td>
+<td style="text-align:center">XXXXXX</td>
+</tr>
+<tr>
+<td style="text-align:center">leftid</td>
+<td style="text-align:center">左侧参加者的身份确认方法</td>
+<td style="text-align:center">可以是IP地址，域名<br><strong>%fromcert</strong>: 表示ID从证书的DN获取<br><strong>%none</strong>: 表示不使用ID值</td>
+</tr>
+<tr>
+<td style="text-align:center">leftrsasigkey</td>
+<td style="text-align:center">左侧RSA签名认证</td>
+<td style="text-align:center">格式使用RFC2537 ipsec_ttodata(3)编码<br><strong>%none</strong>:表示不指定值<br><strong>%dnsondemand</strong>: 表示值从DNS中获取当需要使用到此值时<br><strong>%dnsonload</strong>: 表示值从DNS中获取当读取ipsec.conf时(原文这么写的，扎心的翻译)<br><strong>%cert</strong>: 表示信息从 <code>%leftcert</code> 中获取</td>
+</tr>
+<tr>
+<td style="text-align:center">leftrsasigkey2</td>
+<td style="text-align:center">第2个公钥</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">leftcert</td>
+<td style="text-align:center">X509证书</td>
+<td style="text-align:center">如果没有指定全路径，则从 <code>/etc/ipsec.d/certs/</code> 目录中查找。如果opesnswan编译时指定了 <code>USE_LIBNSS=true</code>，那么openswan将会去NSS数据库中查找RSA key</td>
+</tr>
+<tr>
+<td style="text-align:center">leftca</td>
+<td style="text-align:center">CA</td>
+<td style="text-align:center">如果没有指定，那么将用 <code>leftcer</code>t 中的证书认为是CA证书</td>
+</tr>
+<tr>
+<td style="text-align:center">leftsendcert</td>
+<td style="text-align:center">openswan发送X509证书到远程主机的选项配置</td>
+<td style="text-align:center"><strong>yes&#124;always</strong>: 表示总是允许发送证书<br><strong>ifasked</strong>: 缺省,表示如果远程主机要求证书则进行发送<br><strong>no&#124;never</strong>: 表示从不发送证书</td>
+</tr>
+<tr>
+<td style="text-align:center">leftxauthserver</td>
+<td style="text-align:center">左侧为XAUH服务端</td>
+<td style="text-align:center">可以使用<code>PAM认证</code>或 <code>/etc/ipsec.d/passwd</code>中的MD5口令。对端必须配置为 <code>rightxauthclient</code> ，做为XAUTH客户端</td>
+</tr>
+<tr>
+<td style="text-align:center">leftxauthclient</td>
+<td style="text-align:center">左侧为XAUT客户端</td>
+<td style="text-align:center">xauth连接必须进行交互启动，不能使用配置 <code>atuo=start</code>。它必须使用命令行 <code>ipsec auto --up conname</code></td>
+</tr>
+<tr>
+<td style="text-align:center">leftxauthusername</td>
+<td style="text-align:center">XAUTH认证中使用的用户名</td>
+<td style="text-align:center">XAUTH密码在 <code>ipsec.secrets</code> 文件中配置</td>
+</tr>
+<tr>
+<td style="text-align:center">leftmodecfgserver</td>
+<td style="text-align:center">左侧是模式配置服务端</td>
+<td style="text-align:center">它能下发网络配置到客户端。 参数为 <strong>yes</strong> 或 <strong>no （缺省）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">leftmodecfgclient</td>
+<td style="text-align:center">左侧是模式配置客户端</td>
+<td style="text-align:center">它能从服务端接收网络配置。参数为 <strong>yes</strong> 或 <strong>no （缺省）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">modecfgpull</td>
+<td style="text-align:center">从服务端接收模式配置信息</td>
+<td style="text-align:center">参数为 <strong>yes</strong> 或 <strong>no （缺省）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">modecfgdns1<br>modecfgdns2<br>modecfgwins1<br>modecfgwins2</td>
+<td style="text-align:center">指定DNS、WINS的IP地址</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">remote_peer_type</td>
+<td style="text-align:center">设置远程主机类型</td>
+<td style="text-align:center">参数为 <strong>cisco</strong> 或 <strong>ietf</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">nm_configured</td>
+<td style="text-align:center">XXXX</td>
+<td style="text-align:center">XXXX</td>
+</tr>
+<tr>
+<td style="text-align:center">forceencaps</td>
+<td style="text-align:center">RFC-3948封装</td>
+<td style="text-align:center">参数为 <strong>yes</strong> 或 <strong>no （缺省）</strong>。<br>当<code>forceencaps</code>=<strong>yes</strong>时将强制使用<code>RFC-3948封装（UPD端口4500包封闭ESP）</code>。如果此选项打开，那么 <code>nat_traveral=yes</code>必须打开</td>
+</tr>
+<tr>
+<td style="text-align:center">overlapip</td>
+<td style="text-align:center">XXXX</td>
+<td style="text-align:center">XXXX</td>
+</tr>
+<tr>
+<td style="text-align:center">dpddelay</td>
+<td style="text-align:center">主机探测延迟时间</td>
+<td style="text-align:center">缺省为30秒。如果此选项被设置，<code>dpdtimeout</code>也应该设置</td>
+</tr>
+<tr>
+<td style="text-align:center">dpdtimeout</td>
+<td style="text-align:center">主机探测超时时间（以秒为单位）</td>
+<td style="text-align:center">缺省为120秒。如果超时，将删除SA</td>
+</tr>
+<tr>
+<td style="text-align:center">dpdaction</td>
+<td style="text-align:center">当PDP探测到主机死亡时要执行的动作</td>
+<td style="text-align:center"><strong>hold</strong> :（缺省）表示<code>eroute</code>将进入 <code>%hold</code> 状态<br><strong>clear</strong>: 表示<code>eroute</code>和<code>SA</code>都要清除<br><strong>restart</strong>: 表示SA将立即从协商<br><strong>restart_by_peer</strong>: 表示所有死亡主机的SA将进行从协商</td>
+</tr>
+<tr>
+<td style="text-align:center">pfs</td>
+<td style="text-align:center">XXXX</td>
+<td style="text-align:center">参数为 <strong>yes（缺省）</strong> 或 <strong>no</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">aggrmode</td>
+<td style="text-align:center">使用野蛮模式替换主模式</td>
+<td style="text-align:center">野蛮模式不安全，容易受到服务拒绝攻击<br> 参数为 <strong>yes</strong> 或 <strong>no （缺省）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">salifetime</td>
+<td style="text-align:center">SA存活时间</td>
+<td style="text-align:center">参数为<code>数字+ s/m/h/d</code> （缺省为8h，最大24h）<br>“<code>keylife</code>“ “<code>lifetime</code>“ 是 “<code>salifetime</code>“ 的别名</td>
+</tr>
+<tr>
+<td style="text-align:center">rekey</td>
+<td style="text-align:center">当密钥到期后是否进行从协商</td>
+<td style="text-align:center">参数为 <strong>yes（缺省）</strong> 或 <strong>no</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">rekeymargin</td>
+<td style="text-align:center">密钥到期前多长时间进行从协商</td>
+<td style="text-align:center">参数请看 <code>salifetime</code> （缺省9m）</td>
+</tr>
+<tr>
+<td style="text-align:center">keyingtries</td>
+<td style="text-align:center">协商尝试次数</td>
+<td style="text-align:center"><strong>%forever</strong>: 表示从不放弃，一直进行协商</td>
+</tr>
+<tr>
+<td style="text-align:center">ikelifetime</td>
+<td style="text-align:center">IKE存活时间</td>
+<td style="text-align:center">参数请看<code>salifetime</code></td>
+</tr>
+<tr>
+<td style="text-align:center">compress</td>
+<td style="text-align:center">是否进行压缩处理</td>
+<td style="text-align:center">参数为 <strong>yes</strong> 或 <strong>no （缺省）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">metric</td>
+<td style="text-align:center">设置ipsecX 或 mastX 接口的 metric 优先级</td>
+<td style="text-align:center">XXXX</td>
+</tr>
+<tr>
+<td style="text-align:center">mtu</td>
+<td style="text-align:center">设置MTU</td>
+<td style="text-align:center">XXXX</td>
+</tr>
+<tr>
+<td style="text-align:center">disablearrivalcheck</td>
+<td style="text-align:center">XXXX</td>
+<td style="text-align:center">参数为 <strong>yes</strong> 或 <strong>no （缺省）</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">failureshunt</td>
+<td style="text-align:center">当协商失败时执行的动作</td>
+<td style="text-align:center">缺省为 <strong>none</strong><br><strong>passthrough</strong>；<strong>drop</strong>；<strong>reject</strong><br>具体看选项 <code>type</code></td>
+</tr>
+</tbody>
+</table>
+<ol start="5">
+<li><h3 id="配置部分"><a href="#配置部分" class="headerlink" title="配置部分"></a>配置部分</h3>此部分包含了软件启动时所使用到的信息，例如：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">config setup</span><br><span class="line">   interfaes=<span class="string">"ipsec0=eth1 ipsec1=ppp0"</span></span><br><span class="line">   klipsdebug=none</span><br><span class="line">   plutodebug=control</span><br><span class="line">   protostack=auto</span><br><span class="line">   manualstart=</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="有坑要填"><a href="#有坑要填" class="headerlink" title="有坑要填"></a>有坑要填</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="ANON 微信"/>
+        <p>微信</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="ANON 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ipsec/" rel="tag"><i class="fa fa-tag"></i> ipsec</a>
+          
+            <a href="/tags/vpn/" rel="tag"><i class="fa fa-tag"></i> vpn</a>
+          
+            <a href="/tags/有坑要填/" rel="tag"><i class="fa fa-tag"></i> 有坑要填</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/20/cf557117.html" rel="next" title="使用StyleUrl+Chrome修改CSS样式表">
+                <i class="fa fa-chevron-left"></i> 使用StyleUrl+Chrome修改CSS样式表
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/21/e8146f74.html" rel="prev" title="IPSEC AUTO详解">
+                IPSEC AUTO详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="ANON" />
+            
+              <p class="site-author-name" itemprop="name">ANON</p>
+              <p class="site-description motion-element" itemprop="description">Just do it!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/qqqasdwx" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明"><span class="nav-number">2.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充声明"><span class="nav-number">3.</span> <span class="nav-text">补充声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文"><span class="nav-number">4.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#描述"><span class="nav-number">4.1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">4.2.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接选项（GENERAL）"><span class="nav-number">4.3.</span> <span class="nav-text">连接选项（GENERAL）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接选项（AUTOMATIC-KEYING）"><span class="nav-number">4.4.</span> <span class="nav-text">连接选项（AUTOMATIC KEYING）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置部分"><span class="nav-number">4.5.</span> <span class="nav-text">配置部分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有坑要填"><span class="nav-number">5.</span> <span class="nav-text">有坑要填</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ANON</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'EHhrlmbjz8RoJED6nE0vIiti-gzGzoHsz',
+        appKey: 'shet1HU8FEEujc0kkuxxEHW4',
+        placeholder: '发表你的评论，供我更好的改进本文！',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('-1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="/js/src/click.js"></script>
+</body>
+</html>

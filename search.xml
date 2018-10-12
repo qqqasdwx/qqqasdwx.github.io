@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[Seafile Terminal客户端同步间隔设置开机自启教程]]></title>
+    <url>%2F2018%2F10%2F12%2F47c0a75d.html</url>
+    <content type="text"><![CDATA[简介 因为我个人的怪癖，代码喜欢实时同步到服务器上去让它自己热编译，所以想找找看多端同步的开源软件，之前是用nextCloud，但发现它多端同步的时候不是增量上传，导致同步速度极慢，我这暴脾气，果断换了seafile,但在使用的时候，发现seafile的Terminal客户端不是自动开机自启的，每次重启还要执行seaf-cli start启动守护线程，很麻烦，官网文档又没给ubuntu14.04开机自启的解决方案，所以自行搜索调试，最后解决了此问题，在此记录一下。 环境 系统：ubuntu 14.04时间：2018-10seafile server：6.1.8 安装&amp;配置 seafile服务器端没啥好说的，用的是seafile官方文档-Linux 下部署 Seafile 服务器中提供的Seafile 安装脚本 下载了专业版的包（需要去Seafile用户中心注册下载） 然后跟着安装脚本走就行了。 Terminal客户端的配置参考Install Seafile Client on Linux和Seafile client for a Cli server都不难，就几条命令 开机自启 如果你的服务器运行systemd（ubuntu15.04及以上）,就可以用官方文档-开机自启动 Seafile的解决方案，不过我没试过，不知道好用不好用。 因为我服务器系统版本是ubuntu14.04，不支持systemd，所以用以下方案，参考了Seafile Terminal Client - Installation und Synchronisation unter Ubuntu 14.04.x LTS 首先，创建一个开机脚本 1nano /usr/local/bin/seafile-client-starter.sh 写入以下内容，注意seaf-cli的路径别写错了 123#!/bin/shset -e/usr/bin/seaf-cli start 退出，加个执行权限 1chmod +x /usr/local/bin/seafile-client-starter.sh 开个crontab 1crontab -e 写入以下内容，意思是重启后等10秒，让系统网络啊什么的正常工作，然后运行seafile开机脚本，根据自己的情况调整等待时间。我这服务器10秒就够了。 1@reboot sleep 10 &amp;&amp; /bin/sh /usr/local/bin/seafile-client-starter.sh 2&gt;&amp;1 &gt; /var/log/cron.log 重启就行了，运行seaf-cli status看看同步正不正常。 调整同步间隔 其实不设置也没啥事，同步间隔也能接受，不过GUI客户端能设置，Terminal客户端就也要设置一下才甘心 参考了这个 打开seafile目录下的seafile-data/repo.db 1sqlite3 ~/seafile-client/seafile-data/repo.db 执行以下内容，$repo-id替换为你资料库的id，$time替换为你想设置的间隔 1INSERT INTO "RepoProperty" VALUES ('$repo-id','sync-interval','$time'); 退出，重启seaf-cli]]></content>
+      <categories>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>seafile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Local Search 搜索出来的URL不正确的解决办法]]></title>
+    <url>%2F2018%2F10%2F12%2Ff0bee745.html</url>
+    <content type="text"><![CDATA[简介 突然发现此博客的搜索功能不正常了，解决一下。 环境 hexo nexT主题 Local Search 配置 根据nexT文档-搜索服务配置 BUG 点击侧边栏搜索 搜索任意字符 点击任意搜索结果预期结果：跳转到相应文章页面，页面URL应为https://xxxx.qithub.io/2018/01/01/xxx.html显示结果：无法跳转到相应页面,页面的URL为http://0.0.7.226/01/01/xxx.html 调试 走了许多弯路，搜了半天的0.0.7.226,费了很长时间，结果发现是hexo-generator-searchdb生成的search.xml中，文章的URL不对，在编码之后，文章的URL应该是下面这样的： %2F2018%2F01%2F01%2Fxxx.html 但实际上却生成了这样的 %2F%2F2018%2F01%2F01%2Fxxx.html 多了一个%2F，也就是说，在URL解码之后，多了一个/ 但我没仔细想，为什么//2018在innerHTML的时候会变成http://0.0.7.226，应该是一些莫名其妙的转换吧，如果有知道的大佬请告知我原因。 看了一下hexo-generator-searchdb作者的issues，也没发现有别人出现这种问题，想了一下，应该是此插件和hexo-abbrlink插件同时使用的原因，生成静态网页的时候多加了一个/ 解决方案 因为我也没用过nodejs，所以就暴力解决一下 在node_modules/hexo-generator-searchdb/目录下，搜索url字段 应该有以下几个文件是需要修改的 json_generator.jsxml_generator.jsxml.ejs 把搜出来的那行中，config.root都删掉，比如xml_generator.js文件中，相关代码是这样的 12345678 var xml = template(&#123; config: config, posts: posts, pages: pages, raw: raw, limit: searchlimit, feed_url: config.root + searchConfig.path&#125;); 改为 12345678 var xml = template(&#123; config: config, posts: posts, pages: pages, raw: raw, limit: searchlimit, feed_url: searchConfig.path&#125;); 重新生成hexo g，查看搜索结果，应该就可以正常使用了。 后记 我大概看了一下，这个config.root，大概率就是_config.yml文件中的那个root项，但是全局搜索了一下config.root这个字段，有多个插件在用，也就没有继续调试的兴趣了，做一条只知其然的咸鱼罢。 如果有大佬有更好的解决方案，请务必告知我，我将不胜感激！]]></content>
+      <categories>
+        <category>踩坑</category>
+      </categories>
+      <tags>
+        <tag>Local Search</tag>
+        <tag>hexo</tag>
+        <tag>nexT</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[supervisor使用]]></title>
+    <url>%2F2018%2F08%2F30%2Fdf65bfe9.html</url>
+    <content type="text"><![CDATA[简介 推荐一个好用的进程管理程序，再也不用坑爹的screen跑程序了。 先放官方介绍：supervisor介绍（英） 总结一下： Supervisor是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。 它是通过fork/exec的方式把这些被管理的进程当作supervisor的子进程来启动，这样只要在Supervisor的配置文件中，把要管理的进程的可执行文件的路径写进去即可。也实现当子进程挂掉的时候，父进程可以准确获取子进程挂掉的信息的，可以选择是否自己启动和报警。 声明 本文根据以下博客部分观点加上作者自己的一点看法汇聚而成，感谢这些作者。 进程管理supervisor的简单说明 Supervisor的作用与配置 supervisor(一)基础篇 环境 系统：ubuntu 14.04supervisor：3.0b2时间：2018-8 安装 ubuntu/debian1apt install supervisor -y centos1yum install supervisor 配置 子进程配置一般情况下，supervisor本身是不用配置的，在/etc/supervisor/conf.d/新增一个子进程的配置文件xxx.conf，并reload一下supervisorctl就可以了。以下是配置文件常用选项模板。 12345678[program:XXX]command=XXX #脚本执行命令（命令不能为守护进程）directory=XXX #脚本目录stdout_logfile=/var/log/XXX.log #日志输出redirect_stderr=true #把 stderr 重定向到 stdout，默认 falseautostart=true #supervisor启动的时候是否随着同时启动，默认Trueautorestart=true #当程序exit的时候，这个program不会自动重启,默认unexpectedstdout_logfile_maxbytes=10MB #stdout 日志文件大小，默认 50MB 详细配置说明： 选项 简介 默认 必填 描述 [program:xxx] 子进程名称 无 是 这个就是咱们要管理的子进程了，:后面的是名字，最好别乱写和实际进程，有点关联最好。这样的program我们可以设置一个或多个，一个program就是要被管理的一个进程 command 脚本执行命令 无 是 这个就是我们的要启动进程的命令路径了，可以带参数例子：/home/test.py -a &#39;hehe&#39;有一点需要注意的是，我们的command只能是那种在终端运行的进程，不能是守护进程。这个想想也知道了，比如说command=service httpd start。httpd这个进程被linux的service管理了，我们的supervisor再去启动这个命令这已经不是严格意义的子进程了。 process_name=%(program_name)s 进程名 子进程名称 否 如果我们下面的numprocs参数为1的话，就不用管这个参数了，它默认值%(program_name)s也就是上面的那个program冒号后面的名字，但是如果numprocs为多个的话，那就不能这么干了。想想也知道，不可能每个进程都用同一个进程名吧。 numprocs 启动进程的数目 1 否 当不为1时，就是进程池的概念 directory 运行目录 无 否 进程运行前，会前切换到这个目录 umask 进程掩码 none 否 进程掩码 priority 子进程启动关闭优先级 999 否 优先级低的，最先启动，关闭的时候最后关闭 autostart 自启动 true 否 子进程将在supervisord启动后被自动启动 autorestart 自动重启 unexpected 否 这个是设置子进程挂掉后自动重启的情况，有三个选项，false,unexpected和true。如果为false的时候，无论什么情况下，都不会被重新启动.如果为unexpected，只有当进程的退出码不在下面的exitcodes里面定义的退出码的时候，才会被自动重启。当为true的时候，只要子进程挂掉，将会被无条件的重启 startsecs 启动等待 1 否 这个选项是子进程启动多少秒之后，此时状态如果是running，则我们认为启动成功了 startretries 尝试启动次数 3 否 当进程启动失败后，最大尝试启动的次数。。当超过3次后，supervisor将把此进程的状态置为FAIL exitcodes 退出码 无 否 和上面的的autorestart=unexpected对应。。exitcodes里面的定义的退出码是expected的 stopsignal 进程停止信号 TERM 否 以为TERM, HUP, INT, QUIT, KILL, USR1, or USR2等信号，当用设定的信号去干掉进程，退出码会被认为是expected stopwaitsecs 停止信号等待时间 10 否 当我们向子进程发送stopsignal信号后，到系统返回信息给supervisord，所等待的最大时间。 超过这个时间，supervisord会向该子进程发送一个强制kill的信号。 stopasgroup 停止进程组 false 否 这个东西主要用于，supervisord管理的子进程，这个子进程本身还有子进程。那么我们如果仅仅干掉supervisord的子进程的话，子进程的子进程有可能会变成孤儿进程。所以咱们可以设置可个选项，把整个该子进程的整个进程组都干掉。 设置为true的话，一般killasgroup也会被设置为true。需要注意的是，该选项发送的是stop信号 killasgroup 结束进程组 false 否 这个和上面的stopasgroup类似，不过发送的是kill信号 user 用户 无 否 如果supervisord是root启动，我们在这里设置这个非root用户，可以用来管理该program redirect_stderr err重定向 false 否 如果为true，则stderr的日志会被写入stdout日志文件中 stdout_logfile 日志路径 无 否 子进程的stdout的日志路径，可以指定路径，AUTO，none等三个选项。设置为none的话，将没有日志产生。设置为AUTO的话，将随机找一个地方生成日志文件，而且当supervisord重新启动的时候，以前的日志文件会被清空。当 redirect_stderr=true的时候，sterr也会写进这个日志文件 stdout_logfile_maxbytes 日志文件最大大小 50 否 日志文件最大大小 stdout_logfile_backups 日志文件备份数 10 否 日志文件备份数 stdout_capture_maxbytes capture管道的大小 0 否 这个东西是设定capture管道的大小，当值不为0的时候，子进程可以从stdout发送信息，而supervisor可以根据信息，发送相应的event。默认为0，为0的时候表达关闭管道 stdout_events_enabled 触发event false 否 当设置为ture的时候，当子进程由stdout向文件描述符中写日志的时候，将触发supervisord发送PROCESS_LOG_STDOUT类型的event stderr_logfile stderr日志路径 AUTO 否 这个东西是设置stderr写的日志路径，当redirect_stderr=true。这个就不用设置了，设置了也是白搭。因为它会被写入stdout_logfile的同一个文件中默认为AUTO，也就是随便找个地存，supervisord重启被清空 stderr_logfile_maxbytesstderr_logfile_backupsstderr_capture_maxbytesstderr_events_enabled stderr选项 无 否 和stdout一样，就不详细说明了 environment 环境变量 无 否 这个是该子进程的环境变量，和别的子进程是不共享的 supervisor配置不过有的时候我们需要更改一些supervisor本身的配置，稍微解释下。安装完成后默认的配置是这样的 /etc/supervisor/supervisord.conf 12345678910111213141516171819202122232425262728; supervisor config file[unix_http_server]file=/var/run/supervisor.sock ; (the path to the socket file)chmod=0700 ; sockef file mode (default 0700)[supervisord]logfile=/var/log/supervisor/supervisord.log ; (main log file;default $CWD/supervisord.log)pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)childlogdir=/var/log/supervisor ; ('AUTO' child log dir, default $TEMP); the below section must remain in the config file for RPC; (supervisorctl/web interface) to work, additional interfaces may be; added by defining them in separate rpcinterface: sections[rpcinterface:supervisor]supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface[supervisorctl]serverurl=unix:///var/run/supervisor.sock ; use a unix:// URL for a unix socket; The [include] section can just contain the "files" setting. This; setting can list multiple files (separated by whitespace or; newlines). It can also contain wildcards. The filenames are; interpreted as relative to this file. Included files *cannot*; include files themselves.[include]files = /etc/supervisor/conf.d/*.conf 找不到这个文件用一下命令生成 1echo_supervisord_conf &gt; /etc/supervisord.conf [unix_http_server]这部分设置HTTP服务器监听的UNIX domain socket file: 指向UNIX domain socket，即file=/var/run/supervisor.sock chmod：启动时改变supervisor.sock的权限 [supervisord]与supervisord有关的全局配置需要在这部分设置 logfile: 指向记录supervisord进程的log文件 pidfile：pidfile保存子进程的路径 childlogdir：子进程log目录设为AUTO的log目录 [supervisorctl] serverurl：进入supervisord的URL， 对于UNIX domain sockets, 应设为 unix:///absolute/path/to/file.sock [rpcinterface:supervisor]这个选项是给XML_RPC用的，当然你如果想使用supervisord或者web server 这个选项必须要开启的 [include]如果配置文件包含该部分，则该部分必须包含一个files键 files：包含一个或多个文件，这里包含了/etc/supervisor/conf.d/目录下所有的.conf文件，可以在该目录下增加我们自己的配置文件，在该配置文件中增加[program:x]部分，用来运行我们自己的程序 还有一些高级选项我没试过，但找到了相关博客，先放上来，等试过了再写写 supervisor(一)基础篇supervisor(二)eventsupervisor(三)xml_rpc 控制两种方式控制supervisor，进入supervisor面板，或者直接运行命令 进入superviosrctl 1supervisorctl 常用指令 12345678910help [xxx] #不带参数为查看所有命令，带参数就是详解start xxx #启动某个子进程stop xxx #停止某个子进程restart xxx #重启某个子进程status #查看所有子进程状态reload #重启supervisordadd #更新配置？好像是，不确定。clear #清除日志start/stop/restart... all #对所有子进程进行操作 剩下的我感觉不太常用，以下是全部指令 12 add clear fg open quit remove restart start stop update avail exit maintail pid reload reread shutdown status tail version 用到的时候再去查吧。 直接运行指令1supervisorctl xxx #xxx为上面的常用指令]]></content>
+      <categories>
+        <category>分享</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>supervisor</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[GCP评测]]></title>
+    <url>%2F2018%2F08%2F30%2Ffcd14a5a.html</url>
+    <content type="text"><![CDATA[简介 忘了什么时候开了Google Cloud Platform的免费赠金，$300，一年的有效期，我记得之前领赠金的时候开了一两个实例测了一下，发现太垃圾，到中国大陆的流量又是另收费，就删了没管，但这两天突然想起来了，赠金还剩下200多，不能浪费，开几个实例测一下，顺带水一篇。 先来吐槽一下 GCP控制台要翻墙！翻墙！翻墙！体验极差，之前搬瓦工被墙了都特意开个中国站，google竟然就让他一直墙着，感受到来自GFW和google深深的恶意。 屎一样的IO本来我觉得阿里云/腾讯云那种300多一年vps的IO已经够垃圾的了，但也没办法，谁叫人家在国内呢，但你GCP连人家的一半都比不上（修正：比阿里云的一半多，但也有限，和腾讯云的差不多T。T—对不起！），换了SSD也一样，甚至还不如普通硬盘，就有点过分了吧，搬瓦工年付19.9刀的vps，IO是你的5倍都不止，扎心了我的google。 正经的评测 创建了3个实例，分别位于东京，台湾，洛杉矶 bench.sh 使用bench.sh 1wget -qO- bench.sh | bash 东京 洛杉矶 台湾 怎么说呢，勉勉强强ping–chinazchinaz–ping检测 东京 洛杉矶 台湾 ping–ipip.netipip.net–ping检测 东京 洛杉矶 台湾 网页挂了个hello world。 东京 洛杉矶 台湾 总结主要是流量收钱，没有赠金的情况下，很容易出问题，总体来讲不推荐。]]></content>
+      <categories>
+        <category>评测</category>
+      </categories>
+      <tags>
+        <tag>vps</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Golang WebAssembly Demo]]></title>
+    <url>%2F2018%2F08%2F28%2Fd529857f.html</url>
+    <content type="text"><![CDATA[简介闲来无事，跑个Golang版的WebAssembly，关于WebAssembly的介绍点以下链接 WebAssembly 现状与实战]]></content>
+      <categories>
+        <category>Demo</category>
+      </categories>
+      <tags>
+        <tag>有坑要填</tag>
+        <tag>golang</tag>
+        <tag>WebAssembly</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[【转】用Live555中的openRTSP保存H264]]></title>
+    <url>%2F2018%2F08%2F21%2F2e389ee7.html</url>
+    <content type="text"><![CDATA[简介 这两天抽空整理书签，发现有一篇以前做监控时踩坑的文章，转过来留档。 声明 本文转载自用Live555 中的openRTSP 保存H264 想看原文请自行跳转 以下为原文(修复了一些笔误并稍稍美化) 用Live555中的openRTSP保存H264文件很简单 但是发现保存的H264文件并不能直接被VLC播放 同一个RTSP源 用VLC保存的H264文件就可以直接被播放 经过研究 发现是openRTSP没有把SDP中已经包括的SPS &amp;PPS数据保存到文件中 将VLC保存的H264文件的前2个00 00 00 01数据 也就是SPS &amp;PPS复制到openRTSP保存的文件最前头就可以播放了 123456789101112131415 &#125; else if (strcmp(subsession-&gt;mediumName(), "video") == 0 &amp;&amp; (strcmp(subsession-&gt;codecName(), "H264") == 0)) &#123; // For H.264 video stream, we use a special sink that insert start_codes: unsigned int num=0; SPropRecord * sps=parseSPropParameterSets(subsession-&gt;fmtp_spropparametersets(),num); fileSink = H264VideoFileSink::createNew(*env, outFileName, fileSinkBufferSize, oneFilePerFrame); struct timeval tv=&#123;0,0&#125;; unsigned char start_code[4] = &#123;0x00, 0x00, 0x00, 0x01&#125;; fileSink-&gt; addData(start_code, 4, tv); fileSink-&gt;addData(sps[0].sPropBytes,sps[0].sPropLength,tv); fileSink-&gt; addData(start_code, 4, tv); fileSink-&gt;addData(sps[1].sPropBytes,sps[1].sPropLength,tv); delete[] sps;&#125; else &#123;]]></content>
+      <categories>
+        <category>转载</category>
+      </categories>
+      <tags>
+        <tag>live555</tag>
+        <tag>openRTSP</tag>
+        <tag>H264</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[MP4文件格式解析]]></title>
+    <url>%2F2018%2F08%2F21%2F86ee662b.html</url>
+    <content type="text"><![CDATA[简介 这两天抽空整理书签，发现有几篇以前做监控时收藏的文章，就稍微整理一下，留档。 声明 本文根据以下博客部分观点加上作者自己的一点看法汇聚而成，感谢这些作者。 MP4文件格式的解析，以及MP4文件的分割算法 视频文件头解析–MP4 mp4文件格式解析（一） MP4文件格式简要解析 有坑要填 占坑]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>有坑要填</tag>
+        <tag>MP4</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[IPSEC AUTO详解]]></title>
+    <url>%2F2018%2F08%2F21%2Fe8146f74.html</url>
+    <content type="text"><![CDATA[简介 这两天抽空整理书签，发现CSDN上有一篇ipsec auto的参数说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。 声明 本文转载自CSDN上的一篇好文IPSEC_AUTO(8) － 控制IPsec连接，由本文作者整理。 想看原文的请自行跳转 有坑要填 占坑，我先把版本弄清楚，然后再来更新。]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>ipsec</tag>
+        <tag>vpn</tag>
+        <tag>有坑要填</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[IPSEC配置详解]]></title>
+    <url>%2F2018%2F08%2F20%2Fcab61925.html</url>
+    <content type="text"><![CDATA[简介 这两天抽空整理书签，发现CSDN上有一篇ipsec.conf的配置说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。 声明 本文转载自CSDN上的一篇好文IPSEC.CONF(5) － IPsec配置，英文原文IPSEC.CONF，由本文作者梳理。 想看原文的请自行跳转 补充声明 写到一半突然发现英文版原文和CSDN上的文章选项貌似不一致。。。懵了，因为是很久以前加的书签，也忘了当时用的那个版本了，所以以下内容看看就行了，不保证以下所有选项都可用（大部分应该还是可用的），等我有时间了啃一下英文版的，重新搭一个，再来补完这篇吧。估计没什么希望了，逃~。 放一个当前稳定版本（好像是2.06？）的英文文档链接IPSEC.CONF 正文 描述ipsec.conf指定了Openswan IPsec子系统的大多数配置和控制信息。 1include ipsec.*.conf 包含指定的配置文件 例子conn项定义了一个IPsec连接的规范，名字可以随意定义。例如： 12345678910conn snt left=10.11.11.1 leftsubnet=10.0.1.0/24 leftnexthop=172.16.55.66 leftsourceip=10.0.1.1 right=192.168.22.1 rightsubnet=10.0.2.0/24 rightnexthop=172.16.88.99 rightsourceip=10.0.2.1 keyingtries=%forever 连接选项（GENERAL） 选项 描述 参数 connaddrfamily 连接地址族 可用参数为ipv4（缺省）或者ipv6IPv6在openswan 2.4中的NETKEY支持和openswan 2.6.33中的KLIPS支持 type 连接类型 tunnel：隧道模式，用户的整个IP数据包被用来计算AH或ESP头，AH或ESP头以及ESP加密的用户数据被封装在一个新的IP数据包中。通常，隧道模式应用在两个安全网关之间的通讯。transport：传输模式，只是传输层数据被用来计算AH或ESP头，AH或ESP头以及ESP加密的用户数据被放置在原IP包头后面。通常，传输模式应用在两台主机之间的通讯，或一台主机和一个安全网关之间的通讯。 passthrough：表示不使用IPsecdrop:表示丢弃数据reject:表示丢弃数据并返回ICMP诊断包 left [必选项] 左侧设备公网接口IP地址 ip地址%defaultroute：如果 config setup 项中的 interfaces 包含 %defaultroute，那么left将自动由本地的缺省路由接口地址填充；leftnexthop也支持。%any：表示在协商时填充。%opportunistic：表示 left 和 lefnexthop 的参数从 left 侧客户端的DNS数据中获取。 leftsubnet 左侧设备的私有子网 格式为 network/netmask支持 vhost: 和 vnet: 这2个速记，语法与 virtual_private 相同 %priv 表示子网与 virtual_private相同 %no 表示没有子网 leftsubnets 指定左侧设备的多个私有子网 格式 {networkA/netmaskA,networkB/netmaskB,[..]}leftsubnet 和 leftsubnets 不能同时使用。 leftprotoport 指定隧道中允许的通过的协议和端口 参数可以是数字或者协议名（请在 /etc/protocols 中查找），例如 leftprotoport=icmp，或 protocol/port，如 tcp/smtp。ports可以使用数字或名字表示（请在 /etc/services 中查找）%any 表示所有的协议端口。 leftnexthop 左侧设备连接公网的下一跳网关IP地址 缺省为 %direct。如果这方法没有使用，则leftnexthop为 %defaultroute leftsourceip 连接中主机的IP地址 ip leftupdown 连接状态改变时的脚本 连接状态改变时， “updown”中的脚本调整路由和防火墙（缺省为 ipsec_updown） leftfirewall 不再使用此选项 不再使用此选项 连接选项（AUTOMATIC KEYING）下面所有项选自动生成key中起作用，在手动指定key中被忽略。 选项 描述 参数 auto IPsec启动时自动执行 现在支持的参数有 add （ipsec auto --add）route（ipsec auto --route）start（ipsec auto --up）manual（ipsec manual --up）ignore 表示不自动启动具体请看 config setup authby 2个安全网关之间的认证方法 secret:表示共享密钥rsasig:表示RSA数据签名（缺省）secret&#124;rsasig:同时使用 ike IKE第一阶段（ISAKMP SA）中的加密/认证算法 格式为 cipher-hash;modpgroup,cipher-hash;modpgroup,...。 例如：ike=3des-sha1,aes-sha1ike=aesike=aes128-md5;modp2048 ike=aes128-sha1;dh22ike=modp1536 算法值请查看 ipsec_spi(8)中的 –ike选项IKE组合形式： cipher: 3des or aes hash: sha1 or md5 pfsgroupt(DHgroup): modp1024 or modp1536 phase2 设置将产生的SA类型 esp用于加密（缺省），ah用于认证 phase2alg 第二阶段中支持的算法 算法之间用逗号分隔 esp 此选项不再使用 用phase2alg代替 ah 连接中的AH算法 算法格式请看 ipsec_spi(8)中的 –ah选项 ikev2 IKEv2（RFC4309）设置使用 never 或 no 表示不使用IKEv2propos 或 yes 表示允许使用IKEv2，同时缺省使用IKEv2进行协商insist:表示只接受IKEv2协商，IKEv1将被拒绝permit:缺省，表示不主动使用IKEv2，但对端使用IKEv2的话也接受 sareftrack XXXXXX XXXXXX leftid 左侧参加者的身份确认方法 可以是IP地址，域名%fromcert: 表示ID从证书的DN获取%none: 表示不使用ID值 leftrsasigkey 左侧RSA签名认证 格式使用RFC2537 ipsec_ttodata(3)编码%none:表示不指定值%dnsondemand: 表示值从DNS中获取当需要使用到此值时%dnsonload: 表示值从DNS中获取当读取ipsec.conf时(原文这么写的，扎心的翻译)%cert: 表示信息从 %leftcert 中获取 leftrsasigkey2 第2个公钥 leftcert X509证书 如果没有指定全路径，则从 /etc/ipsec.d/certs/ 目录中查找。如果opesnswan编译时指定了 USE_LIBNSS=true，那么openswan将会去NSS数据库中查找RSA key leftca CA 如果没有指定，那么将用 leftcert 中的证书认为是CA证书 leftsendcert openswan发送X509证书到远程主机的选项配置 yes&#124;always: 表示总是允许发送证书ifasked: 缺省,表示如果远程主机要求证书则进行发送no&#124;never: 表示从不发送证书 leftxauthserver 左侧为XAUH服务端 可以使用PAM认证或 /etc/ipsec.d/passwd中的MD5口令。对端必须配置为 rightxauthclient ，做为XAUTH客户端 leftxauthclient 左侧为XAUT客户端 xauth连接必须进行交互启动，不能使用配置 atuo=start。它必须使用命令行 ipsec auto --up conname leftxauthusername XAUTH认证中使用的用户名 XAUTH密码在 ipsec.secrets 文件中配置 leftmodecfgserver 左侧是模式配置服务端 它能下发网络配置到客户端。 参数为 yes 或 no （缺省） leftmodecfgclient 左侧是模式配置客户端 它能从服务端接收网络配置。参数为 yes 或 no （缺省） modecfgpull 从服务端接收模式配置信息 参数为 yes 或 no （缺省） modecfgdns1modecfgdns2modecfgwins1modecfgwins2 指定DNS、WINS的IP地址 remote_peer_type 设置远程主机类型 参数为 cisco 或 ietf nm_configured XXXX XXXX forceencaps RFC-3948封装 参数为 yes 或 no （缺省）。当forceencaps=yes时将强制使用RFC-3948封装（UPD端口4500包封闭ESP）。如果此选项打开，那么 nat_traveral=yes必须打开 overlapip XXXX XXXX dpddelay 主机探测延迟时间 缺省为30秒。如果此选项被设置，dpdtimeout也应该设置 dpdtimeout 主机探测超时时间（以秒为单位） 缺省为120秒。如果超时，将删除SA dpdaction 当PDP探测到主机死亡时要执行的动作 hold :（缺省）表示eroute将进入 %hold 状态clear: 表示eroute和SA都要清除restart: 表示SA将立即从协商restart_by_peer: 表示所有死亡主机的SA将进行从协商 pfs XXXX 参数为 yes（缺省） 或 no aggrmode 使用野蛮模式替换主模式 野蛮模式不安全，容易受到服务拒绝攻击 参数为 yes 或 no （缺省） salifetime SA存活时间 参数为数字+ s/m/h/d （缺省为8h，最大24h）“keylife“ “lifetime“ 是 “salifetime“ 的别名 rekey 当密钥到期后是否进行从协商 参数为 yes（缺省） 或 no rekeymargin 密钥到期前多长时间进行从协商 参数请看 salifetime （缺省9m） keyingtries 协商尝试次数 %forever: 表示从不放弃，一直进行协商 ikelifetime IKE存活时间 参数请看salifetime compress 是否进行压缩处理 参数为 yes 或 no （缺省） metric 设置ipsecX 或 mastX 接口的 metric 优先级 XXXX mtu 设置MTU XXXX disablearrivalcheck XXXX 参数为 yes 或 no （缺省） failureshunt 当协商失败时执行的动作 缺省为 nonepassthrough；drop；reject具体看选项 type 配置部分此部分包含了软件启动时所使用到的信息，例如：123456config setup interfaes="ipsec0=eth1 ipsec1=ppp0" klipsdebug=none plutodebug=control protostack=auto manualstart= 有坑要填]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>ipsec</tag>
+        <tag>vpn</tag>
+        <tag>有坑要填</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[使用StyleUrl+Chrome修改CSS样式表]]></title>
+    <url>%2F2018%2F08%2F20%2Fcf557117.html</url>
+    <content type="text"><![CDATA[简介 我们有时会在 Chrome 浏览器的开发者工具里面，修改 CSS 样式表。这个浏览器插件会比较修改前后的样式表，生成 diff 文件，并存入 GitHub Gist。 声明 拜读阮一峰的网络日志-每周分享第 18 期后，觉得此插件很有意思，来推荐一下。 正文 安装在StyleUrl官网点击ADD TO CHROME即可完成安装，需梯子请自备。 使用 找一个网站这里用google试一下 打开工具打开开发者工具(F12)，并启用StyleUrl插件。 修改CSS样式随便改改CSS样式，这里把背景改成黄的。 查看改动并提交点击StyleUrl插件View changes-&gt;Create Gist 授权给StyleUrl授权创建Gist 完成Gist效果：]]></content>
+      <categories>
+        <category>分享</category>
+      </categories>
+      <tags>
+        <tag>前端</tag>
+        <tag>chrome</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[仅限内部使用的FQ教程]]></title>
+    <url>%2F2018%2F07%2F31%2Fc189fe6a.html</url>
+    <content type="text"><![CDATA[准备阶段 首先，不认识我的可以别往下看了，看完了也翻不出去。 声明 再次重申，翻出去之后，不要干不正常的事情，连累到我大家都没得用。 正餐 先联系我，给你开放注册权限 万恶之源访问这里，界面是这样的： 注册点击注册 登录登录成功后自动创建账号，默认一年有效期，自注册日期之后，每个月200G的流量，到期了告诉我，我给你续上。 点击“账号” 下载客户端 windows 官方下载（保证最新，但有可能被墙） 或者下载这个 版本4.1.0的镜像 解压缩，放到你喜欢的位置（提醒：运行之后可能会生成大量文件，不建议放在桌面上） 安卓 官方下载（保证最新，但有可能被墙） 以下是相关的版本说明 armeabiv-v7a: 第7代及以上的 ARM 处理器。2011年15月以后的生产的大部分Android设备都使用它.arm64-v8a: 第8代、64位ARM处理器，很少设备，三星 Galaxy S6是其中之一。universal: 不知道下哪个就用这个吧。。。。应该x86: 平板、模拟器用得比较多。 或者下载这个版本4.6.1镜像，下载下来是压缩包，解压之后选择对应版本传到手机上，安装即可。如果安卓版提示“必须更新Google Play服务才可以使用”之类的话，请往下看，最后有解决办法还有一种方法，用google play应用商店下载，自动适配版本，但推荐有google账号的人使用此方法，教程也在最后 导入配置 你一定发现了，在第三步中，账号页面中有一个二维码，现在我们点击它，弹窗如图： windows 把弹窗底部的链接复制，打开刚才下载解压的windows客户端，会在右下角状态栏显示一个小飞机的图标，右键选中小飞机。 服务器-&gt;从剪贴板导入URL，即可完成配置。 相关的安装选项我的个人建议：勾选“启用系统代理”，“开机启动”，“允许其他设备连入”，“系统代理模式”选为“PAC模式”，并且将pac更新到最新“PAC-&gt;从GFWList更新本地PAC”，这样的设置就可以国内的流量走本地网络，被墙的流量走软件，既省流量又简洁。 安卓 打开应用，点击右上角的加号，选择“扫描二维码”，扫描弹窗上的二维码 会自动增加一条配置（在没有配置的时候，软件会自动增加一条默认的配置，可点击配置上的编辑-&gt;删除进行删除），点击选中此配置，点击右下角小飞机，即可完成配置。 加餐 关于安卓版本客户端提示“必须更新Google Play服务才可以使用”的解决方案。 简直是让人震惊，本来就是用来FQ的工具，居然得先FQ更新才能使用，令人窒息的操作，下面给出不算优雅的解决方案。 首先，你得有一台配置完成的windows电脑，右键选中状态栏中的小飞机，勾选“允许其他设备连入”，然后记住此电脑的IP地址。 打开手机，连接到与电脑同一网段的网络（就是和电脑连接到同一个路由器）。 点开手机上的设置-WLAN，进入已连接WIFI的详情里 选项中有一个“代理”的选项，如图： 主机名填写电脑的IP，端口1080（1080是默认端口，没改过代理端口的应该都是这个），点击确定，你会发现你可以上google了，也就是说可以更新了，更新完就可以正常使用了。 软件正常使用之后别忘了把代理删了。 安卓版本客户端使用google play应用商店下载的方法 首先得把上面那条加餐做完，就是说配置上代理之后，点击这里进行下载。]]></content>
+      <categories>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>ss</tag>
+        <tag>内部</tag>
+      </tags>
+  </entry>
+</search>

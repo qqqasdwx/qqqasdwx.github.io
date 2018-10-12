@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="linux,supervisor," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介 推荐一个好用的进程管理程序，再也不用坑爹的screen跑程序了。 先放官方介绍：supervisor介绍（英） 总结一下：    Supervisor是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。   它是通过fork/exec的方式把这些被管理的进程当作supervisor的子进程来启动，这样只要在Supe">
+<meta name="keywords" content="linux,supervisor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="supervisor使用">
+<meta property="og:url" content="https://qqqasdwx.github.io/2018/08/30/df65bfe9.html">
+<meta property="og:site_name" content="ANON&#39;s blog">
+<meta property="og:description" content="简介 推荐一个好用的进程管理程序，再也不用坑爹的screen跑程序了。 先放官方介绍：supervisor介绍（英） 总结一下：    Supervisor是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。   它是通过fork/exec的方式把这些被管理的进程当作supervisor的子进程来启动，这样只要在Supe">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-03T07:24:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="supervisor使用">
+<meta name="twitter:description" content="简介 推荐一个好用的进程管理程序，再也不用坑爹的screen跑程序了。 先放官方介绍：supervisor介绍（英） 总结一下：    Supervisor是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。   它是通过fork/exec的方式把这些被管理的进程当作supervisor的子进程来启动，这样只要在Supe">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":1},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://qqqasdwx.github.io/2018/08/30/df65bfe9.html"/>
+
+
+
+
+
+  <title>supervisor使用 | ANON's blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-123159998-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a859beeb8d00febf6787289e8763ad6b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ANON's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://qqqasdwx.github.io/2018/08/30/df65bfe9.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ANON">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANON's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">supervisor使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-30T13:23:36+08:00">
+                2018-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分享/" itemprop="url" rel="index">
+                    <span itemprop="name">分享</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/30/df65bfe9.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/30/df65bfe9.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p> 推荐一个好用的进程管理程序，再也不用坑爹的<code>screen</code>跑程序了。<br> 先放官方介绍：<a href="http://supervisord.org/introduction.html" target="_blank" rel="noopener">supervisor介绍（英）</a><br> 总结一下：  </p>
+<ul>
+<li><strong>Supervisor</strong>是用<code>Python</code>开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台<code>daemon</code>，并监控进程状态，异常退出时能自动重启。  </li>
+<li>它是通过<code>fork/exec</code>的方式把这些被管理的进程当作<code>supervisor</code>的子进程来启动，这样只要在<strong>Supervisor</strong>的配置文件中，把要管理的进程的可执行文件的路径写进去即可。也实现当子进程挂掉的时候，父进程可以准确获取子进程挂掉的信息的，可以选择是否自己启动和报警。  </li>
+</ul>
+<h2 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h2><p> 本文根据以下博客部分观点加上作者自己的一点看法汇聚而成，感谢这些作者。  </p>
+<ol>
+<li><a href="https://www.cnblogs.com/zhoujinyi/p/6073705.html" target="_blank" rel="noopener">进程管理supervisor的简单说明</a></li>
+<li><a href="https://www.jianshu.com/p/0226b7c59ae2" target="_blank" rel="noopener">Supervisor的作用与配置</a></li>
+<li><a href="http://blog.51cto.com/lixcto/1539136" target="_blank" rel="noopener">supervisor(一)基础篇</a></li>
+</ol>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><blockquote>
+<p>系统：<code>ubuntu 14.04</code><br>supervisor：<code>3.0b2</code><br>时间：<code>2018-8</code></p>
+</blockquote>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li><h3 id="ubuntu-debian"><a href="#ubuntu-debian" class="headerlink" title="ubuntu/debian"></a>ubuntu/debian</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install supervisor -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="centos"><a href="#centos" class="headerlink" title="centos"></a>centos</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install supervisor</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><ul>
+<li><h3 id="子进程配置"><a href="#子进程配置" class="headerlink" title="子进程配置"></a>子进程配置</h3><p>一般情况下，<code>supervisor</code>本身是不用配置的，在<code>/etc/supervisor/conf.d/</code>新增一个子进程的配置文件<code>xxx.conf</code>，并reload一下<code>supervisorctl</code>就可以了。以下是配置文件常用选项模板。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[program:XXX]</span><br><span class="line"><span class="built_in">command</span>=XXX <span class="comment">#脚本执行命令（命令不能为守护进程）</span></span><br><span class="line">directory=XXX <span class="comment">#脚本目录</span></span><br><span class="line">stdout_logfile=/var/<span class="built_in">log</span>/XXX.log <span class="comment">#日志输出</span></span><br><span class="line">redirect_stderr=<span class="literal">true</span> <span class="comment">#把 stderr 重定向到 stdout，默认 false</span></span><br><span class="line">autostart=<span class="literal">true</span> <span class="comment">#supervisor启动的时候是否随着同时启动，默认True</span></span><br><span class="line">autorestart=<span class="literal">true</span> <span class="comment">#当程序exit的时候，这个program不会自动重启,默认unexpected</span></span><br><span class="line">stdout_logfile_maxbytes=10MB <span class="comment">#stdout 日志文件大小，默认 50MB</span></span><br></pre></td></tr></table></figure>
+<p>详细配置说明：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">选项</th>
+<th style="text-align:center">简介</th>
+<th style="text-align:center">默认</th>
+<th style="text-align:center">必填</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">[program:xxx]</td>
+<td style="text-align:center">子进程名称</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">这个就是咱们要管理的子进程了，<code>:</code>后面的是名字，最好别乱写和实际进程，有点关联最好。这样的program我们可以设置一个或多个，一个program就是要被管理的一个进程</td>
+</tr>
+<tr>
+<td style="text-align:center">command</td>
+<td style="text-align:center">脚本执行命令</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">这个就是我们的要启动进程的命令路径了，可以带参数<br>例子：<code>/home/test.py -a &#39;hehe&#39;</code><br>有一点需要注意的是，我们的command只能是那种在终端运行的进程，不能是守护进程。这个想想也知道了，比如说<code>command=service httpd start</code>。<strong>httpd</strong>这个进程被<strong>linux</strong>的<strong>service</strong>管理了，我们的<strong>supervisor</strong>再去启动这个命令这已经不是严格意义的子进程了。</td>
+</tr>
+<tr>
+<td style="text-align:center">process_name=%(program_name)s</td>
+<td style="text-align:center">进程名</td>
+<td style="text-align:center"><strong>子进程名称</strong></td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">如果我们下面的numprocs参数为1的话，就不用管这个参数了，它默认值<code>%(program_name)s</code>也就是上面的那个<strong>program</strong>冒号后面的名字，但是如果<strong>numprocs</strong>为多个的话，那就不能这么干了。想想也知道，不可能每个进程都用同一个进程名吧。</td>
+</tr>
+<tr>
+<td style="text-align:center">numprocs</td>
+<td style="text-align:center">启动进程的数目</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">当不为1时，就是进程池的概念</td>
+</tr>
+<tr>
+<td style="text-align:center">directory</td>
+<td style="text-align:center">运行目录</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">进程运行前，会前切换到这个目录</td>
+</tr>
+<tr>
+<td style="text-align:center">umask</td>
+<td style="text-align:center">进程掩码</td>
+<td style="text-align:center">none</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">进程掩码</td>
+</tr>
+<tr>
+<td style="text-align:center">priority</td>
+<td style="text-align:center">子进程启动关闭优先级</td>
+<td style="text-align:center">999</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">优先级低的，最先启动，关闭的时候最后关闭</td>
+</tr>
+<tr>
+<td style="text-align:center">autostart</td>
+<td style="text-align:center">自启动</td>
+<td style="text-align:center">true</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">子进程将在supervisord启动后被自动启动</td>
+</tr>
+<tr>
+<td style="text-align:center">autorestart</td>
+<td style="text-align:center">自动重启</td>
+<td style="text-align:center">unexpected</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">这个是设置子进程挂掉后自动重启的情况，有三个选项，<strong>false</strong>,<strong>unexpected</strong>和<strong>true</strong>。如果为<strong>false</strong>的时候，无论什么情况下，都不会被重新启动.如果为<strong>unexpected</strong>，只有当进程的退出码不在下面的<strong>exitcodes</strong>里面定义的退出码的时候，才会被自动重启。当为<strong>true</strong>的时候，只要子进程挂掉，将会被无条件的重启</td>
+</tr>
+<tr>
+<td style="text-align:center">startsecs</td>
+<td style="text-align:center">启动等待</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">这个选项是子进程启动多少秒之后，此时状态如果是<strong>running</strong>，则我们认为启动成功了</td>
+</tr>
+<tr>
+<td style="text-align:center">startretries</td>
+<td style="text-align:center">尝试启动次数</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">当进程启动失败后，最大尝试启动的次数。。当超过3次后，<strong>supervisor</strong>将把此进程的状态置为<strong>FAIL</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">exitcodes</td>
+<td style="text-align:center">退出码</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">和上面的的<code>autorestart=unexpected</code>对应。。<strong>exitcodes</strong>里面的定义的退出码是<strong>expected</strong>的</td>
+</tr>
+<tr>
+<td style="text-align:center">stopsignal</td>
+<td style="text-align:center">进程停止信号</td>
+<td style="text-align:center">TERM</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">以为<code>TERM</code>, <code>HUP</code>, <code>INT</code>, <code>QUIT</code>, <code>KILL</code>, <code>USR1</code>, or <code>USR2</code>等信号，当用设定的信号去干掉进程，退出码会被认为是<strong>expected</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">stopwaitsecs</td>
+<td style="text-align:center">停止信号等待时间</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">当我们向子进程发送<strong>stopsignal</strong>信号后，到系统返回信息给<strong>supervisord</strong>，所等待的最大时间。 超过这个时间，<strong>supervisord</strong>会向该子进程发送一个强制kill的信号。</td>
+</tr>
+<tr>
+<td style="text-align:center">stopasgroup</td>
+<td style="text-align:center">停止进程组</td>
+<td style="text-align:center">false</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">这个东西主要用于，<strong>supervisord</strong>管理的子进程，这个子进程本身还有子进程。那么我们如果仅仅干掉<strong>supervisord</strong>的子进程的话，子进程的子进程有可能会变成孤儿进程。所以咱们可以设置可个选项，把整个该子进程的整个进程组都干掉。 设置为<strong>true</strong>的话，一般<code>killasgroup</code>也会被设置为<strong>true</strong>。需要注意的是，该选项发送的是<strong>stop</strong>信号</td>
+</tr>
+<tr>
+<td style="text-align:center">killasgroup</td>
+<td style="text-align:center">结束进程组</td>
+<td style="text-align:center">false</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">这个和上面的<code>stopasgroup</code>类似，不过发送的是<strong>kill</strong>信号</td>
+</tr>
+<tr>
+<td style="text-align:center">user</td>
+<td style="text-align:center">用户</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">如果<strong>supervisord</strong>是<code>root</code>启动，我们在这里设置这个非<code>root</code>用户，可以用来管理该<strong>program</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">redirect_stderr</td>
+<td style="text-align:center">err重定向</td>
+<td style="text-align:center">false</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">如果为<strong>true</strong>，则<code>stderr</code>的日志会被写入<code>stdout</code>日志文件中</td>
+</tr>
+<tr>
+<td style="text-align:center">stdout_logfile</td>
+<td style="text-align:center">日志路径</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">子进程的<code>stdout</code>的日志路径，可以指定<code>路径</code>，<code>AUTO</code>，<code>none</code>等三个选项。设置为<code>none</code>的话，将没有日志产生。设置为<code>AUTO</code>的话，将随机找一个地方生成日志文件，而且当<strong>supervisord</strong>重新启动的时候，以前的日志文件会被清空。当 <code>redirect_stderr=true</code>的时候，<code>sterr</code>也会写进这个日志文件</td>
+</tr>
+<tr>
+<td style="text-align:center">stdout_logfile_maxbytes</td>
+<td style="text-align:center">日志文件最大大小</td>
+<td style="text-align:center">50</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">日志文件最大大小</td>
+</tr>
+<tr>
+<td style="text-align:center">stdout_logfile_backups</td>
+<td style="text-align:center">日志文件备份数</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">日志文件备份数</td>
+</tr>
+<tr>
+<td style="text-align:center">stdout_capture_maxbytes</td>
+<td style="text-align:center">capture管道的大小</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">这个东西是设定<code>capture管道</code>的大小，当值不为0的时候，子进程可以从<code>stdout</code>发送信息，而<strong>supervisor</strong>可以根据信息，发送相应的<strong>event</strong>。默认为0，为0的时候表达关闭管道</td>
+</tr>
+<tr>
+<td style="text-align:center">stdout_events_enabled</td>
+<td style="text-align:center">触发event</td>
+<td style="text-align:center">false</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">当设置为<code>ture</code>的时候，当子进程由<code>stdout</code>向文件描述符中写日志的时候，将触发<strong>supervisord</strong>发送<code>PROCESS_LOG_STDOUT</code>类型的<strong>event</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">stderr_logfile</td>
+<td style="text-align:center">stderr日志路径</td>
+<td style="text-align:center">AUTO</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">这个东西是设置<code>stderr</code>写的日志路径，当<code>redirect_stderr=true</code>。这个就不用设置了，设置了也是白搭。因为它会被写入<code>stdout_logfile</code>的同一个文件中默认为<code>AUTO</code>，也就是随便找个地存，<strong>supervisord</strong>重启被清空</td>
+</tr>
+<tr>
+<td style="text-align:center">stderr_logfile_maxbytes<br>stderr_logfile_backups<br>stderr_capture_maxbytes<br>stderr_events_enabled</td>
+<td style="text-align:center">stderr选项</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">和<code>stdout</code>一样，就不详细说明了</td>
+</tr>
+<tr>
+<td style="text-align:center">environment</td>
+<td style="text-align:center">环境变量</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">这个是该子进程的环境变量，和别的子进程是不共享的</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><h3 id="supervisor配置"><a href="#supervisor配置" class="headerlink" title="supervisor配置"></a>supervisor配置</h3><p>不过有的时候我们需要更改一些supervisor本身的配置，稍微解释下。<br>安装完成后默认的配置是这样的</p>
+<blockquote>
+<p>/etc/supervisor/supervisord.conf</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">; supervisor config file</span><br><span class="line"></span><br><span class="line">[unix_http_server]</span><br><span class="line">file=/var/run/supervisor.sock   ; (the path to the socket file)</span><br><span class="line">chmod=0700                       ; sockef file mode (default 0700)</span><br><span class="line"></span><br><span class="line">[supervisord]</span><br><span class="line">logfile=/var/<span class="built_in">log</span>/supervisor/supervisord.log ; (main <span class="built_in">log</span> file;default <span class="variable">$CWD</span>/supervisord.log)</span><br><span class="line">pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)</span><br><span class="line">childlogdir=/var/<span class="built_in">log</span>/supervisor            ; (<span class="string">'AUTO'</span> child <span class="built_in">log</span> dir, default <span class="variable">$TEMP</span>)</span><br><span class="line"></span><br><span class="line">; the below section must remain <span class="keyword">in</span> the config file <span class="keyword">for</span> RPC</span><br><span class="line">; (supervisorctl/web interface) to work, additional interfaces may be</span><br><span class="line">; added by defining them <span class="keyword">in</span> separate rpcinterface: sections</span><br><span class="line">[rpcinterface:supervisor]</span><br><span class="line">supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</span><br><span class="line"></span><br><span class="line">[supervisorctl]</span><br><span class="line">serverurl=unix:///var/run/supervisor.sock ; use a unix:// URL  <span class="keyword">for</span> a unix socket</span><br><span class="line"></span><br><span class="line">; The [include] section can just contain the <span class="string">"files"</span> setting.  This</span><br><span class="line">; setting can list multiple files (separated by whitespace or</span><br><span class="line">; newlines).  It can also contain wildcards.  The filenames are</span><br><span class="line">; interpreted as relative to this file.  Included files *cannot*</span><br><span class="line">; include files themselves.</span><br><span class="line"></span><br><span class="line">[include]</span><br><span class="line">files = /etc/supervisor/conf.d/*.conf</span><br></pre></td></tr></table></figure>
+<p>找不到这个文件用一下命令生成</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo_supervisord_conf &gt; /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>[<strong>unix_http_server</strong>]<br>这部分设置HTTP服务器监听的UNIX domain socket  </p>
+<ul>
+<li><strong>file</strong>: 指向UNIX domain socket，即file=/var/run/supervisor.sock</li>
+<li><strong>chmod</strong>：启动时改变supervisor.sock的权限</li>
+</ul>
+</li>
+<li>[<strong>supervisord</strong>]<br>与supervisord有关的全局配置需要在这部分设置<ul>
+<li><strong>logfile</strong>: 指向记录supervisord进程的log文件</li>
+<li><strong>pidfile</strong>：pidfile保存子进程的路径</li>
+<li><strong>childlogdir</strong>：子进程log目录设为AUTO的log目录</li>
+</ul>
+</li>
+<li>[<strong>supervisorctl</strong>]<ul>
+<li><strong>serverurl</strong>：进入supervisord的URL， 对于UNIX domain sockets, 应设为 unix:///absolute/path/to/file.sock</li>
+</ul>
+</li>
+<li>[<strong>rpcinterface:supervisor</strong>]<br>这个选项是给XML_RPC用的，当然你如果想使用supervisord或者web server 这个选项必须要开启的</li>
+<li><p>[<strong>include</strong>]<br>如果配置文件包含该部分，则该部分必须包含一个files键</p>
+<ul>
+<li><strong>files</strong>：包含一个或多个文件，这里包含了/etc/supervisor/conf.d/目录下所有的.conf文件，可以在该目录下增加我们自己的配置文件，在该配置文件中增加[program:x]部分，用来运行我们自己的程序</li>
+</ul>
+<p>还有一些高级选项我没试过，但找到了相关博客，先放上来，等试过了再写写</p>
+<blockquote>
+<p><a href="http://blog.51cto.com/lixcto/1539136" target="_blank" rel="noopener">supervisor(一)基础篇</a><br><a href="http://blog.51cto.com/lixcto/1540169" target="_blank" rel="noopener">supervisor(二)event</a><br><a href="http://blog.51cto.com/lixcto/1540795" target="_blank" rel="noopener">supervisor(三)xml_rpc</a></p>
+</blockquote>
+<h2 id="控制"><a href="#控制" class="headerlink" title="控制"></a>控制</h2><p>两种方式控制supervisor，进入supervisor面板，或者直接运行命令</p>
+</li>
+<li><p>进入superviosrctl</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisorctl</span><br></pre></td></tr></table></figure>
+<p>常用指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">help</span> [xxx] <span class="comment">#不带参数为查看所有命令，带参数就是详解</span></span><br><span class="line">start xxx <span class="comment">#启动某个子进程</span></span><br><span class="line">stop xxx <span class="comment">#停止某个子进程</span></span><br><span class="line">restart xxx <span class="comment">#重启某个子进程</span></span><br><span class="line">status <span class="comment">#查看所有子进程状态</span></span><br><span class="line">reload <span class="comment">#重启supervisord</span></span><br><span class="line">add <span class="comment">#更新配置？好像是，不确定。</span></span><br><span class="line">clear <span class="comment">#清除日志</span></span><br><span class="line"></span><br><span class="line">start/stop/restart... all <span class="comment">#对所有子进程进行操作</span></span><br></pre></td></tr></table></figure>
+<p>剩下的我感觉不太常用，以下是全部指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> add    clear  <span class="built_in">fg</span>        open  quit    remove  restart   start   stop  update </span><br><span class="line">avail  <span class="built_in">exit</span>   maintail  pid   reload  reread  shutdown  status  tail  version</span><br></pre></td></tr></table></figure>
+<p>用到的时候再去查吧。</p>
+</li>
+<li>直接运行指令<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisorctl xxx <span class="comment">#xxx为上面的常用指令</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="ANON 微信"/>
+        <p>微信</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="ANON 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+          
+            <a href="/tags/supervisor/" rel="tag"><i class="fa fa-tag"></i> supervisor</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/30/fcd14a5a.html" rel="next" title="GCP评测">
+                <i class="fa fa-chevron-left"></i> GCP评测
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/12/f0bee745.html" rel="prev" title="Local Search 搜索出来的URL不正确的解决办法">
+                Local Search 搜索出来的URL不正确的解决办法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="ANON" />
+            
+              <p class="site-author-name" itemprop="name">ANON</p>
+              <p class="site-description motion-element" itemprop="description">Just do it!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/qqqasdwx" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明"><span class="nav-number">2.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">3.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">4.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ubuntu-debian"><span class="nav-number">4.1.</span> <span class="nav-text">ubuntu/debian</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#centos"><span class="nav-number">4.2.</span> <span class="nav-text">centos</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">5.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#子进程配置"><span class="nav-number">5.1.</span> <span class="nav-text">子进程配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#supervisor配置"><span class="nav-number">5.2.</span> <span class="nav-text">supervisor配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制"><span class="nav-number">6.</span> <span class="nav-text">控制</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ANON</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'EHhrlmbjz8RoJED6nE0vIiti-gzGzoHsz',
+        appKey: 'shet1HU8FEEujc0kkuxxEHW4',
+        placeholder: '发表你的评论，供我更好的改进本文！',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('-1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="/js/src/click.js"></script>
+</body>
+</html>
