@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[闲来无事的阅读（持续更新）]]></title>
+    <url>%2F2018%2F11%2F01%2Fd014d56d.html</url>
+    <content type="text"><![CDATA[简介 此文算是一些书签吧，全是链接，有的是从阮一峰老师的每周分享中看来的，没时间看，先扔在这，等有时间了，再来拜读，有的就是查资料的时候找到的，觉得不错，分享给大家。 正文 Why Kubernetes is The New Application Server 深入理解flutter的编译原理与优化 Julia 1.0 A Detailed Look at RFC 8446 (a.k.a. TLS 1.3) Face detection - An overview and comparison of different solutions Top 25 Programming Puzzles and Brain Teasers]]></content>
+      <categories>
+        <category>分享</category>
+      </categories>
+      <tags>
+        <tag>休闲读物</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[LVS内网穿透测试]]></title>
+    <url>%2F2018%2F11%2F01%2F27ece4b2.html</url>
+    <content type="text"><![CDATA[简介 给朋友家用树莓派做了一个小web页，用来让他在外边用手机访问家里的移动硬盘，但是发现他家的光猫wan口虽然是公网IP，但却没有端口映射/DMZ功能，就想找找内网穿透的方案，花生壳之前用过，垃圾的一比，又得花钱，作为一个程序员，怎么能用这么low的方案呢？ 找来找去，内网穿透的开源方案倒是不少（如ngrok，frp等），但都有性能瓶颈，也就是说： 如果在光猫可以正常映射的情况下，直接访问家里的服务器，理论带宽应该为家中网络的上传带宽而如果用内网穿透，理论带宽就是公网服务器的上传带宽 再加上国内的服务器带宽实在太贵，所以想找个合适的方案，最终看到了lvs/tun模式，理论上讲，lvs搭配ddns，应该能实现我想要的功能，所以折腾一下，哪怕不成功，记录一下失败的原因也好。 lvs一般是作为负载均衡服务来使用的，但我看了看它的TUN模式，就是IP隧道模式，这个模式提到了三角通信的概念，就是说， 用户将请求发到公网服务器，经过服务器封装，发到业务服务器(这里的业务服务器就是家中的树莓派)业务服务器收到请求，将响应直接发送给用户 这样做的好处就是：公网服务器只作为转发请求的通道，而请求数据一般都不会太大，1M的小水管感觉就够了，而响应则是家里的树莓派发出，无需走公网服务器，这样的话，理论带宽就是家中的上传带宽，很完美不是么。 声明 此文参考了以下内容 负载均衡之LVS TUN模式（IP隧道） 10. LVS: You can’t map (or rewrite) ports with LVS-DR, LVS-Tun or localnode (but you can with iptables) LVS TUN LVS负载均衡之LVS-TUN实例部署（案例篇） LVS-TUN(Virtual Server via IP Tunneling)原理说明与配置用例 LVS负载均衡之基本介绍（介绍篇） 使用LVS+TUN搭建集群实现负载均衡 感谢以上作者提供的帮助，想看原文请自行跳转]]></content>
+      <categories>
+        <category>折腾</category>
+      </categories>
+      <tags>
+        <tag>有坑要填</tag>
+        <tag>lvs</tag>
+        <tag>内网穿透</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[[go101笔记]基本概念]]></title>
+    <url>%2F2018%2F10%2F12%2F9270eef0.html</url>
+    <content type="text"><![CDATA[简介 看到一本还不错的书，go101，觉得不错，整理一下，做个笔记 声明 本文大部分内容来自go101，由本文作者翻译，摘取整理。 想看英文原版的请自行跳转 正文类型 Go支持以下内置基本类型： 一种内置布尔类型：bool 十一种内置整数类型：int8，uint8，int16， uint16，int32，uint32， int64，uint64，int，uint，uintptr 两种内置浮点数类型：float32和float64 两种内置复数类型：complex64和complex128 一种内置字符串类型：string Go还支持两种别名类型 byte：uint8的别名 rune：int32的别名 int和uint值取决于操作系统，32位系统int就是4字节，64位系统int就是8字节 complex64实部和虚部都是float32，complex128实部和虚部都是float64 常量常量声明中的自动完成 以下代码 123456789const ( X float32 = 3.14 Y // 只能有一个标识符 Z // 只能有一个标识符 A, B = "Go", "language" C, _ // 需要“_”进行占位) 等同于 12345678const ( X float32 = 3.14 Y float32 = 3.14 Z float32 = 3.14 A, B = "Go", "language" C, _ = "Go", "language" ) iota 先放一个示例，了解一下编译时会发生什么 1234567891011121314151617181920212223242526272829package mainfunc main() &#123; const ( k = 3 // now, iota == 0 m float32 = iota + 0.1 // m float32 = 1 + 0.1 n // n float32 = 2 + 0.1 p = 9 // now, iota == 3 q = iota * 2 // q = 4 * 2 _ // _ = 5 * 2 r // r = 6 * 2 s, t = iota, iota // s, t = 7, 7 u, v // u, v = 8, 8 _, w // _, w = 9, 9 ) const x = iota // x = 0 const ( y = iota // y = 0 z // z = 1 ) println(m, n) // +1.100000e+000 +2.100000e+000 println(q, r) // 8 12 println(s, t, u, v, w) // 7 7 8 8 9 println(x, y, z) // 0 0 1&#125; 正式使用时，应该使用的更有意义，如： 1234567891011const ( Failed = iota - 1 // == -1 Unknown // == 0 Succeeded // == 1)const ( Readable = 1 &lt;&lt; iota // == 1 Writable // == 2 Executable // == 4) 变量包级变量的依赖关系影响其初始化顺序 对于以下示例 12var x, y = a+1, 5 // 8 5var a, b, c = b+1, c+1, y // 7 6 5 8 包级变量的初始化顺序是y = 5，c = y，b = c+1，a = b+1，x = a+1]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+        <tag>go101</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Seafile Terminal客户端同步间隔设置开机自启教程]]></title>
     <url>%2F2018%2F10%2F12%2F47c0a75d.html</url>
     <content type="text"><![CDATA[简介 因为我个人的怪癖，代码喜欢实时同步到服务器上去让它自己热编译，所以想找找看多端同步的开源软件，之前是用nextCloud，但发现它多端同步的时候不是增量上传，导致同步速度极慢，我这暴脾气，果断换了seafile,但在使用的时候，发现seafile的Terminal客户端不是自动开机自启的，每次重启还要执行seaf-cli start启动守护线程，很麻烦，官网文档又没给ubuntu14.04开机自启的解决方案，所以自行搜索调试，最后解决了此问题，在此记录一下。 环境 系统：ubuntu 14.04时间：2018-10seafile server：6.1.8 安装&amp;配置 seafile服务器端没啥好说的，用的是seafile官方文档-Linux 下部署 Seafile 服务器中提供的Seafile 安装脚本 下载了专业版的包（需要去Seafile用户中心注册下载） 然后跟着安装脚本走就行了。 Terminal客户端的配置参考Install Seafile Client on Linux和Seafile client for a Cli server都不难，就几条命令 开机自启 如果你的服务器运行systemd（ubuntu15.04及以上）,就可以用官方文档-开机自启动 Seafile的解决方案，不过我没试过，不知道好用不好用。 因为我服务器系统版本是ubuntu14.04，不支持systemd，所以用以下方案，参考了Seafile Terminal Client - Installation und Synchronisation unter Ubuntu 14.04.x LTS 首先，创建一个开机脚本 1nano /usr/local/bin/seafile-client-starter.sh 写入以下内容，注意seaf-cli的路径别写错了 123#!/bin/shset -e/usr/bin/seaf-cli start 退出，加个执行权限 1chmod +x /usr/local/bin/seafile-client-starter.sh 开个crontab 1crontab -e 写入以下内容，意思是重启后等10秒，让系统网络啊什么的正常工作，然后运行seafile开机脚本，根据自己的情况调整等待时间。我这服务器10秒就够了。 1@reboot sleep 10 &amp;&amp; /bin/sh /usr/local/bin/seafile-client-starter.sh 2&gt;&amp;1 &gt; /var/log/cron.log 重启就行了，运行seaf-cli status看看同步正不正常。 调整同步间隔 其实不设置也没啥事，同步间隔也能接受，不过GUI客户端能设置，Terminal客户端就也要设置一下才甘心 参考了这个 打开seafile目录下的seafile-data/repo.db 1sqlite3 ~/seafile-client/seafile-data/repo.db 执行以下内容，$repo-id替换为你资料库的id，$time替换为你想设置的间隔 1INSERT INTO "RepoProperty" VALUES ('$repo-id','sync-interval','$time'); 退出，重启seaf-cli]]></content>

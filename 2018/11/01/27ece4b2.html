@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="有坑要填,lvs,内网穿透," />
 
 
 
@@ -86,16 +86,18 @@
 
 
 
-<meta name="description" content="Just do it!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ANON&#39;s blog">
-<meta property="og:url" content="https://qqqasdwx.github.io/archives/2018/08/index.html">
+<meta name="description" content="简介 给朋友家用树莓派做了一个小web页，用来让他在外边用手机访问家里的移动硬盘，但是发现他家的光猫wan口虽然是公网IP，但却没有端口映射/DMZ功能，就想找找内网穿透的方案，花生壳之前用过，垃圾的一比，又得花钱，作为一个程序员，怎么能用这么low的方案呢？ 找来找去，内网穿透的开源方案倒是不少（如ngrok，frp等），但都有性能瓶颈，也就是说：  如果在光猫可以正常映射的情况下，直接访问家里">
+<meta name="keywords" content="有坑要填,lvs,内网穿透">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LVS内网穿透测试">
+<meta property="og:url" content="https://qqqasdwx.github.io/2018/11/01/27ece4b2.html">
 <meta property="og:site_name" content="ANON&#39;s blog">
-<meta property="og:description" content="Just do it!">
+<meta property="og:description" content="简介 给朋友家用树莓派做了一个小web页，用来让他在外边用手机访问家里的移动硬盘，但是发现他家的光猫wan口虽然是公网IP，但却没有端口映射/DMZ功能，就想找找内网穿透的方案，花生壳之前用过，垃圾的一比，又得花钱，作为一个程序员，怎么能用这么low的方案呢？ 找来找去，内网穿透的开源方案倒是不少（如ngrok，frp等），但都有性能瓶颈，也就是说：  如果在光猫可以正常映射的情况下，直接访问家里">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-01T14:54:41.140Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ANON&#39;s blog">
-<meta name="twitter:description" content="Just do it!">
+<meta name="twitter:title" content="LVS内网穿透测试">
+<meta name="twitter:description" content="简介 给朋友家用树莓派做了一个小web页，用来让他在外边用手机访问家里的移动硬盘，但是发现他家的光猫wan口虽然是公网IP，但却没有端口映射/DMZ功能，就想找找内网穿透的方案，花生壳之前用过，垃圾的一比，又得花钱，作为一个程序员，怎么能用这么low的方案呢？ 找来找去，内网穿透的开源方案倒是不少（如ngrok，frp等），但都有性能瓶颈，也就是说：  如果在光猫可以正常映射的情况下，直接访问家里">
 
 
 
@@ -125,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="https://qqqasdwx.github.io/archives/2018/08/"/>
+  <link rel="canonical" href="https://qqqasdwx.github.io/2018/11/01/27ece4b2.html"/>
 
 
 
 
 
-  <title>归档 | ANON's blog</title>
+  <title>LVS内网穿透测试 | ANON's blog</title>
   
 
 
@@ -169,7 +171,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -297,333 +299,225 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://qqqasdwx.github.io/2018/11/01/27ece4b2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ANON">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANON's blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">LVS内网穿透测试</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-01T22:19:55+08:00">
+                2018-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 14 篇日志。 继续努力。
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/折腾/" itemprop="url" rel="index">
+                    <span itemprop="name">折腾</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
 
-        
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/01/27ece4b2.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/01/27ece4b2.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/30/df65bfe9.html" itemprop="url">
-              
-                <span itemprop="name">supervisor使用</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-30T13:23:36+08:00"
-              content="2018-08-30" >
-          08-30
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/30/fcd14a5a.html" itemprop="url">
-              
-                <span itemprop="name">GCP评测</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-30T11:41:20+08:00"
-              content="2018-08-30" >
-          08-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/28/d529857f.html" itemprop="url">
-              
-                <span itemprop="name">Golang WebAssembly Demo</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-28T18:01:16+08:00"
-              content="2018-08-28" >
-          08-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/21/2e389ee7.html" itemprop="url">
-              
-                <span itemprop="name">【转】用Live555中的openRTSP保存H264</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-21T18:35:18+08:00"
-              content="2018-08-21" >
-          08-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p> 给朋友家用树莓派做了一个小web页，用来让他在外边用手机访问家里的移动硬盘，但是发现他家的光猫wan口虽然是公网IP，但却没有端口映射/DMZ功能，就想找找内网穿透的方案，花生壳之前用过，垃圾的一比，又得花钱，作为一个程序员，怎么能用这么low的方案呢？<br> 找来找去，内网穿透的开源方案倒是不少（如ngrok，frp等），但都有性能瓶颈，也就是说：</p>
+<blockquote>
+<p>如果在光猫可以正常映射的情况下，直接访问家里的服务器，理论带宽应该为家中网络的上传带宽<br>而如果用内网穿透，理论带宽就是公网服务器的上传带宽</p>
+</blockquote>
+<p> 再加上国内的服务器带宽实在太贵，所以想找个合适的方案，最终看到了lvs/tun模式，理论上讲，lvs搭配ddns，应该能实现我想要的功能，所以折腾一下，哪怕不成功，记录一下失败的原因也好。<br> lvs一般是作为负载均衡服务来使用的，但我看了看它的TUN模式，就是IP隧道模式，这个模式提到了三角通信的概念，就是说，</p>
+<blockquote>
+<p>用户将请求发到公网服务器，经过服务器封装，发到业务服务器(这里的业务服务器就是家中的树莓派)<br>业务服务器收到请求，将响应直接发送给用户</p>
+</blockquote>
+<p> 这样做的好处就是：公网服务器只作为转发请求的通道，而请求数据一般都不会太大，1M的小水管感觉就够了，而响应则是家里的树莓派发出，无需走公网服务器，这样的话，理论带宽就是家中的上传带宽，很完美不是么。</p>
+<h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p> 此文参考了以下内容<br> <a href="https://blog.csdn.net/ffm83/article/details/42589279" target="_blank" rel="noopener">负载均衡之LVS TUN模式（IP隧道）</a><br> <a href="http://www.austintek.com/LVS/LVS-HOWTO/HOWTO/LVS-HOWTO.rewrite_ports.html#re-mapping_ports_with_iptables" target="_blank" rel="noopener">10. LVS: You can’t map (or rewrite) ports with LVS-DR, LVS-Tun or localnode (but you can with iptables)</a><br> <a href="http://www.atomicgain.com/lvs-tun/" target="_blank" rel="noopener">LVS TUN</a><br> <a href="http://blog.51cto.com/blief/1747656" target="_blank" rel="noopener">LVS负载均衡之LVS-TUN实例部署（案例篇）</a><br> <a href="https://blog.csdn.net/nimasike/article/details/53893609" target="_blank" rel="noopener">LVS-TUN(Virtual Server via IP Tunneling)原理说明与配置用例</a><br> <a href="http://blog.51cto.com/blief/1742694" target="_blank" rel="noopener">LVS负载均衡之基本介绍（介绍篇）</a><br> <a href="http://blog.51cto.com/blxueyuan/1866648" target="_blank" rel="noopener">使用LVS+TUN搭建集群实现负载均衡</a><br> 感谢以上作者提供的帮助，想看原文请自行跳转<br><a id="more"></a></p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/21/86ee662b.html" itemprop="url">
-              
-                <span itemprop="name">MP4文件格式解析</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-21T18:19:34+08:00"
-              content="2018-08-21" >
-          08-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/21/e8146f74.html" itemprop="url">
-              
-                <span itemprop="name">IPSEC AUTO详解</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-21T11:36:02+08:00"
-              content="2018-08-21" >
-          08-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/20/cab61925.html" itemprop="url">
-              
-                <span itemprop="name">IPSEC配置详解</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-20T18:39:40+08:00"
-              content="2018-08-20" >
-          08-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/20/cf557117.html" itemprop="url">
-              
-                <span itemprop="name">使用StyleUrl+Chrome修改CSS样式表</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-08-20T11:23:06+08:00"
-              content="2018-08-20" >
-          08-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="ANON 微信"/>
+        <p>微信</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="ANON 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/有坑要填/" rel="tag"><i class="fa fa-tag"></i> 有坑要填</a>
+          
+            <a href="/tags/lvs/" rel="tag"><i class="fa fa-tag"></i> lvs</a>
+          
+            <a href="/tags/内网穿透/" rel="tag"><i class="fa fa-tag"></i> 内网穿透</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/12/9270eef0.html" rel="next" title="[go101笔记]基本概念">
+                <i class="fa fa-chevron-left"></i> [go101笔记]基本概念
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/01/d014d56d.html" rel="prev" title="闲来无事的阅读（持续更新）">
+                闲来无事的阅读（持续更新） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -631,6 +525,13 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -651,8 +552,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -726,6 +636,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#声明"><span class="nav-number">2.</span> <span class="nav-text">声明</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -886,6 +812,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
