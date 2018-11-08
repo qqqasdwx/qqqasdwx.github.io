@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[sublime安装及使用]]></title>
+    <url>%2F2018%2F11%2F08%2Fa0386001.html</url>
+    <content type="text"><![CDATA[简介 Sublime Text是一个很好用的编辑器，记录一下安装过程还有各种插件 正文windows 安装进入官网Sublime Text直接点DOWNLOAD FOR WINDOWS，下载安装程序按提示安装就可以了 激活怎么说呢，还是建议大家有能力的话去支持一下作者，但我还是掏不起80刀，所以找找激活的办法，其实就算不激活也没什么，就是会在保存的时候出现弹窗直接给出链接SUBLIME TEXT 2.X, 3.X UNIVERSAL LICENSE KEYS COLLECTION FOR WIN, MAC &amp; LIN此网址会按sublime版本给出激活码，别选错了，网站最后还给出了禁用sublime更新的方法，阅读没啥难度 安装Package Control想要安装插件自然得先安装Package Control还是给出链接INSTALLATION - Package Control因为安装Package Control的python程序会更新，所以该网站也给出了警告 WARNING: Please do not redistribute the install code via another website. It will change with every release. Instead, please link to this page. 所以还是自行点进去看吧 插件 ChineseLocalizations 汉化插件，没啥说的，看个人需求吧 Color Highlight github 显示颜色的插件 MarkdownEditing github Markdown编辑插件，我个人是修改了以下内容 12345&#123; "color_scheme": "Packages/MarkdownEditing/MarkdownEditor-Dark.tmTheme", //改成黑色主题，默认的主题简直闪瞎眼 "wrap_width": 120, //每行字符上限 "line_numbers": true, //显示行号&#125; IMESupport github 这个是国人大神fork出来的版本原插件是一个日本人开发的，只支持第三方输入法，用win10原版的输入法是不行的这个版本就可以，但不能直接从Package Control安装，需要从github上下载解压，扔到插件目录里去。 Browser Refresh github web开发比较有用，配置好了只需要按出自定义的快捷键就可以切换到浏览器并刷新网页，这样改个样式什么的就很方便的查看结果了不过有一点不好，windows下每次刷新都将焦点移动到浏览器，这样还是得切换回sublime]]></content>
+      <categories>
+        <category>分享</category>
+      </categories>
+      <tags>
+        <tag>持续更新</tag>
+        <tag>sublime</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[linux端口相关命令]]></title>
+    <url>%2F2018%2F11%2F08%2Fa87e2ec0.html</url>
+    <content type="text"><![CDATA[简介 在 Linux 或者类 Unix 中，我该如何检查某个端口是否被占用？我又该如何验证 Linux 服务器中有哪些端口处于监听状态？ 验证哪些端口在服务器的网络接口上处于监听状态是非常重要的。 你需要注意那些开放端口来检测网络入侵。除了网络入侵，为了排除故障，确认服务器上的某个端口是否被其他应用程序占用也是必要的。 比方说，你可能会在同一个系统中安装了 Apache 和 Nginx 服务器，所以了解是 Apache 还是 Nginx 占用了 # 80/443 TCP 端口真的很重要。 这篇快速教程会介绍使用 netstat 、 nmap 和 lsof 命令来检查端口使用信息并找出哪些程序正在使用这些端口。 声明 这篇文章其实是转载到我原博客的，但我当时忘了贴原文地址，所以这里就不放原文地址了，向原文作者表示歉意 还有，这篇文章里面的命令我也只用过几个，不保证其可用性，等我有时间挨个测一下 PS：推荐一个linux命令搜索站点，其中有linux常用命令的说明和选项解读，很有帮助 Linux搜索引擎 正文如何检查 Linux 中的程序和监听的端口 打开一个终端，如 shell 命令窗口。 运行以下任意一行命令： 123sudo lsof -i -P -n | grep LISTENsudo netstat -tulpn | grep LISTENsudo nmap -sTU -O IP地址 下面我们看看这些命令和它们的详细输出内容： 方式 1：lsof 命令123sudo lsof -i -P -nsudo lsof -i -P -n | grep LISTENdoas lsof -i -P -n | grep LISTEN ### OpenBSD 输出如下： 仔细看上面输出的最后一行： 1sshd 85379 root 3u IPv4 0xffff80000039e000 0t0 TCP 10.86.128.138:22 (LISTEN) sshd 是程序的名称 10.86.128.138 是 sshd 程序绑定 (LISTEN) 的 IP 地址 22 是被使用 (LISTEN) 的 TCP 端口 85379 是 sshd 任务的进程 ID (PID) 方式 2：netstat 命令你可以如下面所示使用 netstat 来检查监听的端口和程序。 Linux 中 netstat 语法 1netstat -tulpn | grep LISTEN FreeBSD/MacOS X 中 netstat 语法 12netstat -anp tcp | grep LISTENnetstat -anp udp | grep LISTEN OpenBSD 中 netstat 语法 12netstat -na -f inet | grep LISTENnetstat -nat | grep LISTEN 方式 3：nmap 命令语法如下： 123sudo nmap -sT -O localhostsudo nmap -sU -O 192.168.2.13 ### 列出打开的 UDP 端口sudo nmap -sT -O 192.168.2.13 ### 列出打开的 TCP 端口 示例输出如下： 你可以用一句命令合并 TCP/UDP 扫描： 1sudo nmap -sTU -O 192.168.2.13 赠品：对于 Windows 用户 在 windows 系统下可以使用下面的命令检查端口使用情况： 123netstat -bano | morenetstat -bano | grep LISTENINGnetstat -bano | findstr /R /C:"[LISTING]"]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>有坑要填</tag>
+        <tag>linux</tag>
+        <tag>端口</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[树莓派换源]]></title>
+    <url>%2F2018%2F11%2F08%2F7977c7cd.html</url>
+    <content type="text"><![CDATA[简介 树莓派Raspbian系统的官方源也太慢了，找了找，换个源果然顺畅了许多 正文修改Raspbian的软件源（阿里） /etc/apt/sources.list 123deb http://mirrors.aliyun.com/raspbian/raspbian/ stretch main contrib non-free rpi# Uncomment line below then 'apt-get update' to enable 'apt-get source'deb-src http://mirrors.aliyun.com/raspbian/raspbian/ stretch main contrib non-free rpi 修改树莓派的软件源（中国科技大学） /etc/apt/sources.list.d/raspi.list 123deb http://mirrors.ustc.edu.cn/archive.raspberrypi.org/debian/ stretch main ui# Uncomment line below then 'apt-get update' to enable 'apt-get source'deb-src http://mirrors.ustc.edu.cn/archive.raspberrypi.org/debian/ stretch main ui]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>树莓派</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[golang安装及配置]]></title>
+    <url>%2F2018%2F11%2F08%2F9b996dd5.html</url>
+    <content type="text"><![CDATA[简介 发现golang出到1.11.2版本了，把版本升一下级，并对某些配置进行记录 声明 这里是golang的官网-&gt;golang.org 最新版本去这里找，教程也写得很明白，就是得翻墙，如果不想翻墙的就可以看我的文章 环境 系统：ubuntu14.04GOLANG:1.11.2 正文安装 这次我选用的安装方法是从源码构建GO1.11.2 下载go1.4-bootstrap-XXXXXXXX.tar.gz我下载的是这个版本go1.4-bootstrap-20171003.tar.gz 解压到$HOME/go1.4 安装 1234sudo apt update &amp;&amp; sudo apt install gcc -y //没有安装gcc的先安装一下，构建需要chmod 777 -R go1.4cd go1.4/src/sudo CGO_ENABLED=0 ./make.bash 出现 Installed Go for XXX in /XXX/go1.4Installed commands in /XXX/go1.4/bin 即为成功 然后下载当前版本的go源码包我下载的是这个go1.11.2.src.tar.gz 解压 1sudo tar -C /usr/local -zxvf go1.11.2.src.tar.gz 6.安装 1234cd /usr/local/chmod 777 -R gocd go/src/sudo ./all.bash 出现 ##### API checkGo version is “go1.11.2”, ignoring -next /usr/local/go/api/next.txt ALL TESTS PASSED---Installed Go for linux/amd64 in /usr/local/goInstalled commands in /usr/local/go/bin*** You need to add /usr/local/go/bin to your PATH. 即为成功安装 配置 配置的话我一般分为两套配置，一套是root用户的，一套是普通用户的，主要区别就是，root用户可以直接监听80等端口，所以可以直接go run xxx.go，GOBIN可以直接放在/usr/local目录下，普通用户得老老实实的先build，然后再运行。 ROOT用户 1234export GOBIN=/usr/local/go/binexport PATH=$PATH:$GOBINexport GOPATH=$HOME/gowork #GOPATH就看个人喜好了export GOROOT=/usr/local/go 普通用户 1234export GOBIN=$HOME/gowork/bin #GOBIN就看个人喜好了export PATH=$PATH:$GOBIN:/usr/local/go/binexport GOPATH=$HOME/gowork #GOPATH就看个人喜好了export GOROOT=/usr/local/go 测试 运行Hello World 123456789package mainimport ( "log")func main() &#123; log.Println("hello world")&#125;]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[闲来无事的阅读（持续更新）]]></title>
     <url>%2F2018%2F11%2F01%2Fd014d56d.html</url>
     <content type="text"><![CDATA[简介 此文算是一些书签吧，全是链接，有的是从阮一峰老师的每周分享中看来的，没时间看，先扔在这，等有时间了，再来拜读，有的就是查资料的时候找到的，觉得不错，分享给大家。 正文 Why Kubernetes is The New Application Server 深入理解flutter的编译原理与优化 Julia 1.0 A Detailed Look at RFC 8446 (a.k.a. TLS 1.3) Face detection - An overview and comparison of different solutions Top 25 Programming Puzzles and Brain Teasers]]></content>
@@ -8,6 +55,7 @@
         <category>分享</category>
       </categories>
       <tags>
+        <tag>持续更新</tag>
         <tag>休闲读物</tag>
       </tags>
   </entry>
@@ -39,7 +87,7 @@
   <entry>
     <title><![CDATA[Seafile Terminal客户端同步间隔设置开机自启教程]]></title>
     <url>%2F2018%2F10%2F12%2F47c0a75d.html</url>
-    <content type="text"><![CDATA[简介 因为我个人的怪癖，代码喜欢实时同步到服务器上去让它自己热编译，所以想找找看多端同步的开源软件，之前是用nextCloud，但发现它多端同步的时候不是增量上传，导致同步速度极慢，我这暴脾气，果断换了seafile,但在使用的时候，发现seafile的Terminal客户端不是自动开机自启的，每次重启还要执行seaf-cli start启动守护线程，很麻烦，官网文档又没给ubuntu14.04开机自启的解决方案，所以自行搜索调试，最后解决了此问题，在此记录一下。 环境 系统：ubuntu 14.04时间：2018-10seafile server：6.1.8 安装&amp;配置 seafile服务器端没啥好说的，用的是seafile官方文档-Linux 下部署 Seafile 服务器中提供的Seafile 安装脚本 下载了专业版的包（需要去Seafile用户中心注册下载） 然后跟着安装脚本走就行了。 Terminal客户端的配置参考Install Seafile Client on Linux和Seafile client for a Cli server都不难，就几条命令 开机自启 如果你的服务器运行systemd（ubuntu15.04及以上）,就可以用官方文档-开机自启动 Seafile的解决方案，不过我没试过，不知道好用不好用。 因为我服务器系统版本是ubuntu14.04，不支持systemd，所以用以下方案，参考了Seafile Terminal Client - Installation und Synchronisation unter Ubuntu 14.04.x LTS 首先，创建一个开机脚本 1nano /usr/local/bin/seafile-client-starter.sh 写入以下内容，注意seaf-cli的路径别写错了 123#!/bin/shset -e/usr/bin/seaf-cli start 退出，加个执行权限 1chmod +x /usr/local/bin/seafile-client-starter.sh 开个crontab 1crontab -e 写入以下内容，意思是重启后等10秒，让系统网络啊什么的正常工作，然后运行seafile开机脚本，根据自己的情况调整等待时间。我这服务器10秒就够了。 1@reboot sleep 10 &amp;&amp; /bin/sh /usr/local/bin/seafile-client-starter.sh 2&gt;&amp;1 &gt; /var/log/cron.log 重启就行了，运行seaf-cli status看看同步正不正常。 调整同步间隔 其实不设置也没啥事，同步间隔也能接受，不过GUI客户端能设置，Terminal客户端就也要设置一下才甘心 参考了这个 打开seafile目录下的seafile-data/repo.db 1sqlite3 ~/seafile-client/seafile-data/repo.db 执行以下内容，$repo-id替换为你资料库的id，$time替换为你想设置的间隔 1INSERT INTO "RepoProperty" VALUES ('$repo-id','sync-interval','$time'); 退出，重启seaf-cli]]></content>
+    <content type="text"><![CDATA[简介 因为我个人的怪癖，代码喜欢实时同步到服务器上去让它自己热编译 所以想找找看多端同步的开源软件，之前是用nextCloud 但发现它多端同步的时候不是增量上传，导致同步速度极慢 我这暴脾气，果断换了seafile 但在使用的时候，发现seafile的Terminal客户端不是自动开机自启的，每次重启还要执行seaf-cli start启动守护线程，很麻烦，官网文档又没给ubuntu14.04开机自启的解决方案 所以自行搜索调试，最后解决了此问题，在此记录一下。 环境 系统：ubuntu 14.04时间：2018-10seafile server：6.1.8 安装&amp;配置 seafile服务器端没啥好说的，用的是seafile官方文档-Linux 下部署 Seafile 服务器中提供的Seafile 安装脚本 下载了专业版的包（需要去Seafile用户中心注册下载） 然后跟着安装脚本走就行了。 Terminal客户端的配置参考Install Seafile Client on Linux和Seafile client for a Cli server都不难，就几条命令 开机自启 如果你的服务器运行systemd（ubuntu15.04及以上）,就可以用官方文档-开机自启动 Seafile的解决方案，不过我没试过，不知道好用不好用。 因为我服务器系统版本是ubuntu14.04，不支持systemd，所以用以下方案，参考了Seafile Terminal Client - Installation und Synchronisation unter Ubuntu 14.04.x LTS 首先，创建一个开机脚本 1nano /usr/local/bin/seafile-client-starter.sh 写入以下内容，注意seaf-cli的路径别写错了 123#!/bin/shset -e/usr/bin/seaf-cli start 退出，加个执行权限 1chmod +x /usr/local/bin/seafile-client-starter.sh 开个crontab 1crontab -e 写入以下内容，意思是重启后等10秒，让系统网络啊什么的正常工作，然后运行seafile开机脚本，根据自己的情况调整等待时间。我这服务器10秒就够了。 1@reboot sleep 10 &amp;&amp; /bin/sh /usr/local/bin/seafile-client-starter.sh 2&gt;&amp;1 &gt; /var/log/cron.log 重启就行了，运行seaf-cli status看看同步正不正常。 调整同步间隔 其实不设置也没啥事，同步间隔也能接受，不过GUI客户端能设置，Terminal客户端就也要设置一下才甘心 参考了这个 打开seafile目录下的seafile-data/repo.db 1sqlite3 ~/seafile-client/seafile-data/repo.db 执行以下内容，$repo-id替换为你资料库的id，$time替换为你想设置的间隔 1INSERT INTO "RepoProperty" VALUES ('$repo-id','sync-interval','$time'); 退出，重启seaf-cli]]></content>
       <categories>
         <category>教程</category>
       </categories>
