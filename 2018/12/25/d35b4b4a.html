@@ -86,18 +86,21 @@
 
 
 
-<meta name="description" content="简介 Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。  –by 百度百科">
+<meta name="description" content="简介 Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。  –by 百度百科 声明 本文参考">
 <meta name="keywords" content="wsl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="折腾一下wsl（安装篇）">
 <meta property="og:url" content="https://qqqasdwx.github.io/2018/12/25/d35b4b4a.html">
 <meta property="og:site_name" content="ANON&#39;s blog">
-<meta property="og:description" content="简介 Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。  –by 百度百科">
+<meta property="og:description" content="简介 Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。  –by 百度百科 声明 本文参考">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-20T09:36:52.588Z">
+<meta property="og:image" content="http://qn.v2af.com/images/wsl_install/1.jpg">
+<meta property="og:image" content="http://qn.v2af.com/images/wsl_install/2.jpg">
+<meta property="og:updated_time" content="2019-03-12T03:20:44.463Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="折腾一下wsl（安装篇）">
-<meta name="twitter:description" content="简介 Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。  –by 百度百科">
+<meta name="twitter:description" content="简介 Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。  –by 百度百科 声明 本文参考">
+<meta name="twitter:image" content="http://qn.v2af.com/images/wsl_install/1.jpg">
 
 
 
@@ -413,6 +416,54 @@
 
       
         <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p> Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。  –by 百度百科</p>
+<h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p> 本文参考自<br> <a href="http://www.cnblogs.com/JettTang/p/8186315.html" target="_blank" rel="noopener">WSL(Windows Subsystem for Linux)的安装与使用</a><br> <a href="https://blessing.studio/wsl-guide/" target="_blank" rel="noopener">WSL 配置指北：打造 Windows 最强命令行</a><br> 并通过作者实践经历完成,并不保证适用于所有系统版本.<br><a id="more"></a></p>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><blockquote>
+<p>windows版本: <code>win10专业版 1803</code><br>wsl版本: <code>ubuntu 18.04.1 LTS</code></p>
+</blockquote>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ol>
+<li>开启子系统功能<br>控制面板-&gt;程序和功能-&gt;启用或关闭Windows功能-&gt;勾选 <strong>适用于Linux的Windows子系统</strong><img src="http://qn.v2af.com/images/wsl_install/1.jpg"></li>
+<li>重启电脑</li>
+<li>打开应用商城搜索”wsl”,可根据自己需求选择安装一个或多个Linux系统<img src="http://qn.v2af.com/images/wsl_install/2.jpg"></li>
+<li>安装完成后可在开始菜单里找到快捷方式并启动，第一次运行需要等待安装并设置用户名、密码。</li>
+</ol>
+<h2 id="简单配置"><a href="#简单配置" class="headerlink" title="简单配置"></a>简单配置</h2><h3 id="运行wsl"><a href="#运行wsl" class="headerlink" title="运行wsl"></a>运行wsl</h3><ul>
+<li>wsl 或者 bash</li>
+<li>wsl [command]或者bash -c [command]</li>
+<li><p>Linux系统名称（如：ubuntu），这跟上面在开始菜单里启动是一样的</p>
+<p>其中，前两种方式会运行默认的linux系统，当你安装多个linux系统之后可以使用wslconfig来指定</p>
+</li>
+</ul>
+<h3 id="使用wslconfig命令进行管理"><a href="#使用wslconfig命令进行管理" class="headerlink" title="使用wslconfig命令进行管理"></a>使用wslconfig命令进行管理</h3><ol>
+<li><p>设置默认运行的linux系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wslconfig /setdefault &lt;DistributionName&gt;</span><br></pre></td></tr></table></figure>
+<p>正如上面所说，如果执行wslconfig /setdefault ubuntu，那么执行bash命令则会运行ubuntu</p>
+</li>
+<li><p>卸载linux系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wslconfig /unregister &lt;DistributionName&gt;</span><br></pre></td></tr></table></figure>
+<p>当系统出现问题，我们可以卸载后重新安装。如：wslconfig /unregeister ubuntu</p>
+</li>
+<li>查看已安装的linux系统<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wslconfig /list</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="设置默认登陆用户"><a href="#设置默认登陆用户" class="headerlink" title="设置默认登陆用户"></a>设置默认登陆用户</h3><p> 当我们运行WSL时，它会用第一次运行时输入的用户名登陆，如果想改为其他用户，可以（以ubuntu为例）：<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ubuntu config --default-user root</span><br></pre></td></tr></table></figure></p>
+<p> 这样，以后再运行ubuntu它就会默认以root登陆。此外还可以“ubuntu /?”查看其更多使用方法。</p>
+<h3 id="WSL文件系统与本地文件系统互相访问"><a href="#WSL文件系统与本地文件系统互相访问" class="headerlink" title="WSL文件系统与本地文件系统互相访问"></a>WSL文件系统与本地文件系统互相访问</h3><ol>
+<li>WSL中访问本地文件<br>在“/mnt”目录下有“c”、“d”、“e”等文件夹，分别表示本地的C盘、D盘、E盘，直接cd到相应路径下即可。</li>
+<li><p>DrvFs 文件权限问题<br>虽然 <code>WSL</code> 中可以直接访问 Windows 磁盘的内容，但如果你曾经这么做过，你应该对这样绿油油一片的 <code>ls</code> 不会感到陌生。为什么 NTFS 文件系统中的文件到 WSL 下权限就全部成 <code>0777</code> 了呢？<br>这主要是 DrvFs 中 Linux 文件权限的实现导致的。<br>在 WSL 中，<a href="https://blogs.msdn.microsoft.com/wsl/2016/06/15/wsl-file-system-support/" target="_blank" rel="noopener">Microsoft 实现了两种文件系统</a>，用于支持不同的使用场景：</p>
+<ul>
+<li>VolFs<br>着力于在 Windows 文件系统上提供完整的 Linux 文件系统特性，通过各种手段实现了对 Inodes、Directory entries、File objects、File descriptors、Special file types 的支持。比如为了支持 Windows 上没有的 Inodes，VolFs 会把文件权限等信息保存在文件的 NTFS Extended Attributes 中。记得我上面警告过你不要在 Windows 中修改 WSL 里的文件吗？就是因为 Windows 中新建的文件缺少这个扩展参数，VolFs 无法正确获取该文件的 metadata，而且有些 Windows 上的编辑器会在保存时抹掉这些附加参数。<br>WSL 中的 <code>/</code> 使用的就是 VolFs 文件系统。</li>
+<li>DrvFs<br>着力于提供与 Windows 文件系统的互操作性。与 VolFs 不同，为了提供最大的互操作性，DrvFs 不会在文件的 NTFS Extended Attributes 中储存附加信息，而是从 Windows 的文件权限（Access Control Lists，就是你右键文件 &gt; 属性 &gt; 安全选项卡中的那些权限配置）推断出该文件对应的的 Linux 文件权限。<br>所有 Windows 盘符挂载至 WSL 下的 <code>/mnt</code> 时都是使用的 DrvFs 文件系统。</li>
+</ul>
+<p>由于 DrvFs 的文件权限继承机制很微妙，最后导致的结果就是所有文件的权限都变成了 <code>0777</code>。而且由于早期的 DrvFs 不支持 metadata，所以你无法给这些文件 <code>chown/chmod</code>，只能对着绿油油的 <code>ls</code> 干瞪眼。不过好消息是，Windows Insider Build 17063 之后，DrvFs 也像 VolFs 一样支持给文件写入 metadata 了。<br>要启用 DrvFs 的 metadata 支持，你需要添加参数重新挂载磁盘：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改成你自己的盘符</span></span><br><span class="line">sudo umount /mnt/e</span><br><span class="line">sudo mount -t drvfs E: /mnt/e -o metadata</span><br></pre></td></tr></table></figure>
+<p>不过如果仅仅是执行了这个，虽然支持了文件权限的修改，但磁盘下的文件权限默认依然还是 <code>0777</code>，除非你给它们整个 <code>chmod</code> 一遍。如果你不想这么做，也可以指定其他的 mount 参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -t drvfs E: /mnt/e -o metadata,uid=1000,gid=1000,<span class="built_in">umask</span>=22,fmask=111</span><br></pre></td></tr></table></figure>
+<p>这样磁盘下的文件的默认权限就是 <code>0644</code>，<code>ls</code> 也不会再是绿油油一片啦。<br>不过每次使用时都要重新挂载未免也太烦，我们可以通过另一个新特性 <a href="https://blogs.msdn.microsoft.com/commandline/2018/02/07/automatically-configuring-wsl/" target="_blank" rel="noopener">Automatically Configuring WSL</a> 实现自动挂载。在 WSL 中创建 <code>/etc/wsl.conf</code>，在其中填写如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[automount]</span><br><span class="line">enabled = <span class="literal">true</span></span><br><span class="line">root = /mnt/</span><br><span class="line">options = <span class="string">"metadata,umask=22,fmask=111"</span></span><br><span class="line">mountFsTab = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这个文件里还可以添加其他配置项，有兴趣的可以看看上面的链接</span></span><br></pre></td></tr></table></figure>
+<p>重启终端，所有的盘符就会使用上面的配置自动挂载啦（可以使用 mount -l 查看）。<br>另外，如果你想要给不同的盘符设定不同的挂载参数（上面的方法对所有盘符都有效，如果你想在 WSL 中运行 Windows 下的应用程序，就得每次都 <code>chmod +x</code> 一下，所以我一般都会把 <code>C:</code> 排除掉），就需要手动修改 <code>/etc/fstab</code>。首先确保 <code>wsl.conf</code> 中的 <code>mountFsTab</code> 为 <code>true</code>，然后编辑<code>/etc/fstab</code>，添加如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不在此列表中的盘符会使用 wsl.conf 中的参数挂载</span></span><br><span class="line"><span class="comment"># 格式可以自己去查 fstab 的帮助文档</span></span><br><span class="line">E: /mnt/e drvfs rw,relatime,uid=1000,gid=1000,metadata,<span class="built_in">umask</span>=22,fmask=111 0 0</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 
       
     </div>
@@ -568,7 +619,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -633,7 +684,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#声明"><span class="nav-number">2.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#环境"><span class="nav-number">3.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正文"><span class="nav-number">4.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">4.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单配置"><span class="nav-number">4.2.</span> <span class="nav-text">简单配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行wsl"><span class="nav-number">4.2.1.</span> <span class="nav-text">运行wsl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用wslconfig命令进行管理"><span class="nav-number">4.2.2.</span> <span class="nav-text">使用wslconfig命令进行管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置默认登陆用户"><span class="nav-number">4.2.3.</span> <span class="nav-text">设置默认登陆用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WSL文件系统与本地文件系统互相访问"><span class="nav-number">4.2.4.</span> <span class="nav-text">WSL文件系统与本地文件系统互相访问</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
