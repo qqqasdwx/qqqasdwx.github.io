@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[wsl+docker+vscode+bee混用解决方案]]></title>
-    <url>%2F2019%2F03%2F11%2Fef76364b.html</url>
-    <content type="text"></content>
-  </entry>
-  <entry>
-    <title><![CDATA[折腾一下wsl(vscode篇)]]></title>
-    <url>%2F2019%2F03%2F11%2F5e844274.html</url>
-    <content type="text"></content>
-  </entry>
-  <entry>
     <title><![CDATA[折腾一下ngrok]]></title>
     <url>%2F2019%2F02%2F20%2F3591ec0b.html</url>
     <content type="text"><![CDATA[简介 内网穿透的方案有很多,ngrok应该算众多方案中比较出名的了,折腾一下. 但ngrok不是p2p的打孔,所有流量走中心服务器中转,而国内的带宽又贵的吓人,所以感觉上只能测试或者娱乐,对正式上线的应用用处不大. 声明 本文根据以下博客部分观点加上作者自己的一点看法汇聚而成，感谢这些作者。 【腾讯云的1001种玩法】轻松搭建内网穿透服务Ngrok 环境 server client]]></content>
@@ -32,27 +22,6 @@
       <tags>
         <tag>openssl</tag>
         <tag>证书</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[折腾一下wsl（docker篇）]]></title>
-    <url>%2F2018%2F12%2F25%2F2a1670a0.html</url>
-    <content type="text"></content>
-  </entry>
-  <entry>
-    <title><![CDATA[折腾一下wsl（配置篇）]]></title>
-    <url>%2F2018%2F12%2F25%2F1352f8c.html</url>
-    <content type="text"></content>
-  </entry>
-  <entry>
-    <title><![CDATA[折腾一下wsl（安装篇）]]></title>
-    <url>%2F2018%2F12%2F25%2Fd35b4b4a.html</url>
-    <content type="text"><![CDATA[简介 Windows Subsystem for Linux（简称WSL）是一个为在Windows 10上能够原生运行Linux二进制可执行文件（ELF格式）的兼容层。它是由微软与Canonical公司合作开发，目标是使纯正的Ubuntu 14.04 “Trusty Tahr”映像能下载和解压到用户的本地计算机，并且映像内的工具和实用工具能在此子系统上原生运行。 –by 百度百科 声明 本文参考自 WSL(Windows Subsystem for Linux)的安装与使用 WSL 配置指北：打造 Windows 最强命令行 并通过作者实践经历完成,并不保证适用于所有系统版本. 环境 windows版本: win10专业版 1803wsl版本: ubuntu 18.04.1 LTS 正文安装 开启子系统功能控制面板-&gt;程序和功能-&gt;启用或关闭Windows功能-&gt;勾选 适用于Linux的Windows子系统 重启电脑 打开应用商城搜索”wsl”,可根据自己需求选择安装一个或多个Linux系统 安装完成后可在开始菜单里找到快捷方式并启动，第一次运行需要等待安装并设置用户名、密码。 简单配置运行wsl wsl 或者 bash wsl [command]或者bash -c [command] Linux系统名称（如：ubuntu），这跟上面在开始菜单里启动是一样的 其中，前两种方式会运行默认的linux系统，当你安装多个linux系统之后可以使用wslconfig来指定 使用wslconfig命令进行管理 设置默认运行的linux系统 1wslconfig /setdefault &lt;DistributionName&gt; 正如上面所说，如果执行wslconfig /setdefault ubuntu，那么执行bash命令则会运行ubuntu 卸载linux系统 1wslconfig /unregister &lt;DistributionName&gt; 当系统出现问题，我们可以卸载后重新安装。如：wslconfig /unregeister ubuntu 查看已安装的linux系统1wslconfig /list 设置默认登陆用户 当我们运行WSL时，它会用第一次运行时输入的用户名登陆，如果想改为其他用户，可以（以ubuntu为例）： 1ubuntu config --default-user root 这样，以后再运行ubuntu它就会默认以root登陆。此外还可以“ubuntu /?”查看其更多使用方法。 WSL文件系统与本地文件系统互相访问 WSL中访问本地文件在“/mnt”目录下有“c”、“d”、“e”等文件夹，分别表示本地的C盘、D盘、E盘，直接cd到相应路径下即可。 DrvFs 文件权限问题虽然 WSL 中可以直接访问 Windows 磁盘的内容，但如果你曾经这么做过，你应该对这样绿油油一片的 ls 不会感到陌生。为什么 NTFS 文件系统中的文件到 WSL 下权限就全部成 0777 了呢？这主要是 DrvFs 中 Linux 文件权限的实现导致的。在 WSL 中，Microsoft 实现了两种文件系统，用于支持不同的使用场景： VolFs着力于在 Windows 文件系统上提供完整的 Linux 文件系统特性，通过各种手段实现了对 Inodes、Directory entries、File objects、File descriptors、Special file types 的支持。比如为了支持 Windows 上没有的 Inodes，VolFs 会把文件权限等信息保存在文件的 NTFS Extended Attributes 中。记得我上面警告过你不要在 Windows 中修改 WSL 里的文件吗？就是因为 Windows 中新建的文件缺少这个扩展参数，VolFs 无法正确获取该文件的 metadata，而且有些 Windows 上的编辑器会在保存时抹掉这些附加参数。WSL 中的 / 使用的就是 VolFs 文件系统。 DrvFs着力于提供与 Windows 文件系统的互操作性。与 VolFs 不同，为了提供最大的互操作性，DrvFs 不会在文件的 NTFS Extended Attributes 中储存附加信息，而是从 Windows 的文件权限（Access Control Lists，就是你右键文件 &gt; 属性 &gt; 安全选项卡中的那些权限配置）推断出该文件对应的的 Linux 文件权限。所有 Windows 盘符挂载至 WSL 下的 /mnt 时都是使用的 DrvFs 文件系统。 由于 DrvFs 的文件权限继承机制很微妙，最后导致的结果就是所有文件的权限都变成了 0777。而且由于早期的 DrvFs 不支持 metadata，所以你无法给这些文件 chown/chmod，只能对着绿油油的 ls 干瞪眼。不过好消息是，Windows Insider Build 17063 之后，DrvFs 也像 VolFs 一样支持给文件写入 metadata 了。要启用 DrvFs 的 metadata 支持，你需要添加参数重新挂载磁盘： 123# 修改成你自己的盘符sudo umount /mnt/esudo mount -t drvfs E: /mnt/e -o metadata 不过如果仅仅是执行了这个，虽然支持了文件权限的修改，但磁盘下的文件权限默认依然还是 0777，除非你给它们整个 chmod 一遍。如果你不想这么做，也可以指定其他的 mount 参数： 1sudo mount -t drvfs E: /mnt/e -o metadata,uid=1000,gid=1000,umask=22,fmask=111 这样磁盘下的文件的默认权限就是 0644，ls 也不会再是绿油油一片啦。不过每次使用时都要重新挂载未免也太烦，我们可以通过另一个新特性 Automatically Configuring WSL 实现自动挂载。在 WSL 中创建 /etc/wsl.conf，在其中填写如下内容： 1234567[automount]enabled = trueroot = /mnt/options = "metadata,umask=22,fmask=111"mountFsTab = true# 这个文件里还可以添加其他配置项，有兴趣的可以看看上面的链接 重启终端，所有的盘符就会使用上面的配置自动挂载啦（可以使用 mount -l 查看）。另外，如果你想要给不同的盘符设定不同的挂载参数（上面的方法对所有盘符都有效，如果你想在 WSL 中运行 Windows 下的应用程序，就得每次都 chmod +x 一下，所以我一般都会把 C: 排除掉），就需要手动修改 /etc/fstab。首先确保 wsl.conf 中的 mountFsTab 为 true，然后编辑/etc/fstab，添加如下内容： 123# 不在此列表中的盘符会使用 wsl.conf 中的参数挂载# 格式可以自己去查 fstab 的帮助文档E: /mnt/e drvfs rw,relatime,uid=1000,gid=1000,metadata,umask=22,fmask=111 0 0]]></content>
-      <categories>
-        <category>折腾</category>
-      </categories>
-      <tags>
-        <tag>wsl</tag>
       </tags>
   </entry>
   <entry>
@@ -268,33 +237,7 @@
         <category>笔记</category>
       </categories>
       <tags>
-        <tag>有坑要填</tag>
         <tag>MP4</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[IPSEC AUTO详解]]></title>
-    <url>%2F2018%2F08%2F21%2Fe8146f74.html</url>
-    <content type="text"><![CDATA[简介 这两天抽空整理书签，发现CSDN上有一篇ipsec auto的参数说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。 声明 本文转载自CSDN上的一篇好文IPSEC_AUTO(8) － 控制IPsec连接，由本文作者整理。 想看原文的请自行跳转 有坑要填 占坑，我先把版本弄清楚，然后再来更新。]]></content>
-      <categories>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>ipsec</tag>
-        <tag>vpn</tag>
-        <tag>有坑要填</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[IPSEC配置详解]]></title>
-    <url>%2F2018%2F08%2F20%2Fcab61925.html</url>
-    <content type="text"><![CDATA[简介 这两天抽空整理书签，发现CSDN上有一篇ipsec.conf的配置说明，觉得不错，但他那种排版我有些接受不了，就稍微整理一下，留档。 声明 本文转载自CSDN上的一篇好文IPSEC.CONF(5) － IPsec配置，英文原文IPSEC.CONF，由本文作者梳理。 想看原文的请自行跳转 补充声明 写到一半突然发现英文版原文和CSDN上的文章选项貌似不一致。。。懵了，因为是很久以前加的书签，也忘了当时用的那个版本了，所以以下内容看看就行了，不保证以下所有选项都可用（大部分应该还是可用的），等我有时间了啃一下英文版的，重新搭一个，再来补完这篇吧。估计没什么希望了，逃~。 放一个当前稳定版本（好像是2.06？）的英文文档链接IPSEC.CONF 正文 描述ipsec.conf指定了Openswan IPsec子系统的大多数配置和控制信息。 1include ipsec.*.conf 包含指定的配置文件 例子conn项定义了一个IPsec连接的规范，名字可以随意定义。例如： 12345678910conn snt left=10.11.11.1 leftsubnet=10.0.1.0/24 leftnexthop=172.16.55.66 leftsourceip=10.0.1.1 right=192.168.22.1 rightsubnet=10.0.2.0/24 rightnexthop=172.16.88.99 rightsourceip=10.0.2.1 keyingtries=%forever 连接选项（GENERAL） 选项 描述 参数 connaddrfamily 连接地址族 可用参数为ipv4（缺省）或者ipv6IPv6在openswan 2.4中的NETKEY支持和openswan 2.6.33中的KLIPS支持 type 连接类型 tunnel：隧道模式，用户的整个IP数据包被用来计算AH或ESP头，AH或ESP头以及ESP加密的用户数据被封装在一个新的IP数据包中。通常，隧道模式应用在两个安全网关之间的通讯。transport：传输模式，只是传输层数据被用来计算AH或ESP头，AH或ESP头以及ESP加密的用户数据被放置在原IP包头后面。通常，传输模式应用在两台主机之间的通讯，或一台主机和一个安全网关之间的通讯。 passthrough：表示不使用IPsecdrop:表示丢弃数据reject:表示丢弃数据并返回ICMP诊断包 left [必选项] 左侧设备公网接口IP地址 ip地址%defaultroute：如果 config setup 项中的 interfaces 包含 %defaultroute，那么left将自动由本地的缺省路由接口地址填充；leftnexthop也支持。%any：表示在协商时填充。%opportunistic：表示 left 和 lefnexthop 的参数从 left 侧客户端的DNS数据中获取。 leftsubnet 左侧设备的私有子网 格式为 network/netmask支持 vhost: 和 vnet: 这2个速记，语法与 virtual_private 相同 %priv 表示子网与 virtual_private相同 %no 表示没有子网 leftsubnets 指定左侧设备的多个私有子网 格式 {networkA/netmaskA,networkB/netmaskB,[..]}leftsubnet 和 leftsubnets 不能同时使用。 leftprotoport 指定隧道中允许的通过的协议和端口 参数可以是数字或者协议名（请在 /etc/protocols 中查找），例如 leftprotoport=icmp，或 protocol/port，如 tcp/smtp。ports可以使用数字或名字表示（请在 /etc/services 中查找）%any 表示所有的协议端口。 leftnexthop 左侧设备连接公网的下一跳网关IP地址 缺省为 %direct。如果这方法没有使用，则leftnexthop为 %defaultroute leftsourceip 连接中主机的IP地址 ip leftupdown 连接状态改变时的脚本 连接状态改变时， “updown”中的脚本调整路由和防火墙（缺省为 ipsec_updown） leftfirewall 不再使用此选项 不再使用此选项 连接选项（AUTOMATIC KEYING）下面所有项选自动生成key中起作用，在手动指定key中被忽略。 选项 描述 参数 auto IPsec启动时自动执行 现在支持的参数有 add （ipsec auto --add）route（ipsec auto --route）start（ipsec auto --up）manual（ipsec manual --up）ignore 表示不自动启动具体请看 config setup authby 2个安全网关之间的认证方法 secret:表示共享密钥rsasig:表示RSA数据签名（缺省）secret&#124;rsasig:同时使用 ike IKE第一阶段（ISAKMP SA）中的加密/认证算法 格式为 cipher-hash;modpgroup,cipher-hash;modpgroup,...。 例如：ike=3des-sha1,aes-sha1ike=aesike=aes128-md5;modp2048 ike=aes128-sha1;dh22ike=modp1536 算法值请查看 ipsec_spi(8)中的 –ike选项IKE组合形式： cipher: 3des or aes hash: sha1 or md5 pfsgroupt(DHgroup): modp1024 or modp1536 phase2 设置将产生的SA类型 esp用于加密（缺省），ah用于认证 phase2alg 第二阶段中支持的算法 算法之间用逗号分隔 esp 此选项不再使用 用phase2alg代替 ah 连接中的AH算法 算法格式请看 ipsec_spi(8)中的 –ah选项 ikev2 IKEv2（RFC4309）设置使用 never 或 no 表示不使用IKEv2propos 或 yes 表示允许使用IKEv2，同时缺省使用IKEv2进行协商insist:表示只接受IKEv2协商，IKEv1将被拒绝permit:缺省，表示不主动使用IKEv2，但对端使用IKEv2的话也接受 sareftrack XXXXXX XXXXXX leftid 左侧参加者的身份确认方法 可以是IP地址，域名%fromcert: 表示ID从证书的DN获取%none: 表示不使用ID值 leftrsasigkey 左侧RSA签名认证 格式使用RFC2537 ipsec_ttodata(3)编码%none:表示不指定值%dnsondemand: 表示值从DNS中获取当需要使用到此值时%dnsonload: 表示值从DNS中获取当读取ipsec.conf时(原文这么写的，扎心的翻译)%cert: 表示信息从 %leftcert 中获取 leftrsasigkey2 第2个公钥 leftcert X509证书 如果没有指定全路径，则从 /etc/ipsec.d/certs/ 目录中查找。如果opesnswan编译时指定了 USE_LIBNSS=true，那么openswan将会去NSS数据库中查找RSA key leftca CA 如果没有指定，那么将用 leftcert 中的证书认为是CA证书 leftsendcert openswan发送X509证书到远程主机的选项配置 yes&#124;always: 表示总是允许发送证书ifasked: 缺省,表示如果远程主机要求证书则进行发送no&#124;never: 表示从不发送证书 leftxauthserver 左侧为XAUH服务端 可以使用PAM认证或 /etc/ipsec.d/passwd中的MD5口令。对端必须配置为 rightxauthclient ，做为XAUTH客户端 leftxauthclient 左侧为XAUT客户端 xauth连接必须进行交互启动，不能使用配置 atuo=start。它必须使用命令行 ipsec auto --up conname leftxauthusername XAUTH认证中使用的用户名 XAUTH密码在 ipsec.secrets 文件中配置 leftmodecfgserver 左侧是模式配置服务端 它能下发网络配置到客户端。 参数为 yes 或 no （缺省） leftmodecfgclient 左侧是模式配置客户端 它能从服务端接收网络配置。参数为 yes 或 no （缺省） modecfgpull 从服务端接收模式配置信息 参数为 yes 或 no （缺省） modecfgdns1modecfgdns2modecfgwins1modecfgwins2 指定DNS、WINS的IP地址 remote_peer_type 设置远程主机类型 参数为 cisco 或 ietf nm_configured XXXX XXXX forceencaps RFC-3948封装 参数为 yes 或 no （缺省）。当forceencaps=yes时将强制使用RFC-3948封装（UPD端口4500包封闭ESP）。如果此选项打开，那么 nat_traveral=yes必须打开 overlapip XXXX XXXX dpddelay 主机探测延迟时间 缺省为30秒。如果此选项被设置，dpdtimeout也应该设置 dpdtimeout 主机探测超时时间（以秒为单位） 缺省为120秒。如果超时，将删除SA dpdaction 当PDP探测到主机死亡时要执行的动作 hold :（缺省）表示eroute将进入 %hold 状态clear: 表示eroute和SA都要清除restart: 表示SA将立即从协商restart_by_peer: 表示所有死亡主机的SA将进行从协商 pfs XXXX 参数为 yes（缺省） 或 no aggrmode 使用野蛮模式替换主模式 野蛮模式不安全，容易受到服务拒绝攻击 参数为 yes 或 no （缺省） salifetime SA存活时间 参数为数字+ s/m/h/d （缺省为8h，最大24h）“keylife“ “lifetime“ 是 “salifetime“ 的别名 rekey 当密钥到期后是否进行从协商 参数为 yes（缺省） 或 no rekeymargin 密钥到期前多长时间进行从协商 参数请看 salifetime （缺省9m） keyingtries 协商尝试次数 %forever: 表示从不放弃，一直进行协商 ikelifetime IKE存活时间 参数请看salifetime compress 是否进行压缩处理 参数为 yes 或 no （缺省） metric 设置ipsecX 或 mastX 接口的 metric 优先级 XXXX mtu 设置MTU XXXX disablearrivalcheck XXXX 参数为 yes 或 no （缺省） failureshunt 当协商失败时执行的动作 缺省为 nonepassthrough；drop；reject具体看选项 type 配置部分此部分包含了软件启动时所使用到的信息，例如：123456config setup interfaes="ipsec0=eth1 ipsec1=ppp0" klipsdebug=none plutodebug=control protostack=auto manualstart= 有坑要填]]></content>
-      <categories>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>ipsec</tag>
-        <tag>vpn</tag>
         <tag>有坑要填</tag>
       </tags>
   </entry>
